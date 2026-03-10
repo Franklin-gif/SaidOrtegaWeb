@@ -77,11 +77,20 @@ h4 {
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: max-content;
 }
 
 .scout-icon {
   width: 32px;
   height: 32px;
+}
+
+.logo-text {
+  font-weight: 800;
+  color: var(--scout-purple);
+  white-space: nowrap;
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(0.7rem, 2vw, 1rem);
 }
 
 /* Hero Section: High Impact */
