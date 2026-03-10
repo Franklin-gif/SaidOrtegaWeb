@@ -1,0 +1,471 @@
+import React from 'react';
+import { useLanguage } from '../context/LanguageContext';
+import { usePerson } from '../context/PersonContext';
+import { uploadToCloudinary } from '../utils/cloudinary';
+import { Link } from 'react-router-dom';
+
+const Shapes = () => (
+    <div className="shapes-decor">
+        <div className="shape rhombus"></div>
+        <div className="shape circle"></div>
+        <div className="shape semi"></div>
+        <div className="shape hex"></div>
+    </div>
+);
+
+const Navbar = ({ navData }) => {
+    const { language, setLanguage, translations } = useLanguage();
+    const { person } = usePerson();
+    const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+
+    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+    return (
+        <nav className={`navbar ${isMenuOpen ? 'menu-open' : ''}`}>
+            <div className="container nav-content">
+                <div className="logo-group">
+                    <div className="scout-icon" style={{ display: 'grid', placeItems: 'center', fontSize: '1.5rem' }}>📢</div>
+                    <span className="logo-text">CONSTRUYENDO LIDERAZGO JUVENIL</span>
+                </div>
+
+                <button className="hamburger-btn" onClick={toggleMenu} aria-label="Toggle Menu">
+                    <div className={`bar ${isMenuOpen ? 'open' : ''}`}></div>
+                </button>
+
+                <div className={`nav-links-wrapper ${isMenuOpen ? 'active' : ''}`}>
+                    <a href="/#vision" className="nav-link" onClick={() => setIsMenuOpen(false)}>{navData.about[language]}</a>
+                    <a href="/#profile" className="nav-link" onClick={() => setIsMenuOpen(false)}>{navData.bio[language]}</a>
+                    <a href="/#experience" className="nav-link" onClick={() => setIsMenuOpen(false)}>{navData.experience[language]}</a>
+                    <a href="/#testimonials" className="nav-link" onClick={() => setIsMenuOpen(false)}>{navData.testimonials[language]}</a>
+                    <a href="/#gallery" className="nav-link" onClick={() => setIsMenuOpen(false)}>{navData.gallery ? navData.gallery[language] : 'Galería'}</a>
+                    <a href="/#contact" className="nav-link-last" onClick={() => setIsMenuOpen(false)}>{navData.contact[language]}</a>
+                    
+                    {person?.settings?.candidacyEnabled !== false && (
+                        <Link to="/candidatura" className="candidacy-btn-nav" onClick={() => setIsMenuOpen(false)}>
+                            {navData.candidacy[language]}
+                        </Link>
+                    )}
+                    
+                    <select
+                        className="lang-sel"
+                        value={language}
+                        onChange={(e) => setLanguage(e.target.value)}
+                    >
+                        {Object.keys(translations).map(lang => (
+                            <option key={lang} value={lang}>
+                                {translations[lang].flag} {translations[lang].name.substring(0, 2)}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </div>
+        </nav>
+    );
+};
+
+const Hero = ({ person }) => {
+    const { language } = useLanguage();
+    const [firstName, lastName] = person.name.toUpperCase().split(' ');
+
+    return (
+        <header className="hero">
+            <div className="container">
+                <div className="hero-grid">
+                    <div className="hero-content">
+                        <div className="animate-slide-in-left delay-100"><Shapes /></div>
+                        <div className="name-banner animate-fade-in-up delay-200">
+                            <span className="name-part name-said">{firstName}</span>
+                            <span className="name-part name-ortega">{lastName}</span>
+                        </div>
+                        <span className="tagline-badge animate-fade-in-up delay-300">{person.tagline[language]}</span>
+                        <p className="animate-fade-in-up delay-400" style={{ fontSize: '1.4rem', fontWeight: '600', color: 'var(--scout-blue)', lineHeight: '1.3' }}>
+                            {person.sections.hero.subtitle[language]}
+                        </p>
+                    </div>
+                    <div className="hero-image-wrapper animate-scale-in delay-500">
+                        <img src={person.imagePath} alt={person.name} />
+                    </div>
+                </div>
+            </div>
+        </header>
+    );
+};
+
+const VisionSection = ({ visionData }) => {
+    const { language } = useLanguage();
+    return (
+        <section id="vision" className="section">
+            <div className="container">
+                <h2 className="section-title">
+                    {visionData.title[language]} <i></i>
+                </h2>
+                <div className="info-cards">
+                    {visionData.cards.map((card, idx) => (
+                        <div key={idx} className="info-card">
+                            <h3>{card.title[language]}</h3>
+                            <p>{card.desc[language]}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const ExperienceSection = ({ expData }) => {
+    const { language } = useLanguage();
+    const [isOpen, setIsOpen] = React.useState(false);
+
+    const toggleText = {
+        es: isOpen ? "Ver menos ▲" : "Ver toda mi trayectoria ▼",
+        en: isOpen ? "Show less ▲" : "View my full trajectory ▼",
+        pt: isOpen ? "Ver menos ▲" : "Ver minha trajetória completa ▼",
+        ar: isOpen ? "عرض أقل ▲" : "عرض مسيرتي الكاملة ▼"
+    };
+
+    // Show only first 3 items if not open, otherwise show all
+    const displayedItems = isOpen ? expData.items : expData.items.slice(0, 3);
+
+    return (
+        <section id="experience" className="section" style={{ background: 'var(--bg-light)' }}>
+            <div className="container">
+                <h2 className="section-title">
+                    {expData.title[language]} <i></i>
+                </h2>
+                <div className="timeline">
+                    {displayedItems.map((item, idx) => (
+                        <div key={idx} className="timeline-item">
+                            <div className="timeline-dot"></div>
+                            <div className="timeline-content">
+                                <span className="timeline-year">{item.year}</span>
+                                <h4 style={{ color: 'var(--scout-purple)', marginBottom: '0.3rem' }}>{item.title[language]}</h4>
+                                <p style={{ fontWeight: '500', fontSize: '0.9rem', opacity: 0.8 }}>{item.org}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                {expData.items.length > 3 && (
+                    <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+                        <button
+                            onClick={() => setIsOpen(!isOpen)}
+                            style={{
+                                background: 'transparent',
+                                border: '2px solid var(--scout-blue)',
+                                color: 'var(--scout-blue)',
+                                padding: '0.8rem 2rem',
+                                borderRadius: '50px',
+                                fontFamily: 'inherit',
+                                fontWeight: '700',
+                                cursor: 'pointer',
+                                transition: 'var(--transition)'
+                            }}
+                            onMouseEnter={e => { e.currentTarget.style.background = 'var(--scout-blue)'; e.currentTarget.style.color = 'white'; }}
+                            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--scout-blue)'; }}
+                        >
+                            {toggleText[language]}
+                        </button>
+                    </div>
+                )}
+            </div>
+        </section>
+    );
+};
+
+const CandidacySection = ({ candData }) => {
+    const { language } = useLanguage();
+    return (
+        <section id="candidacy" className="section">
+            <div className="container">
+                <h2 className="section-title">
+                    {candData.title[language]} <i></i>
+                </h2>
+                <div className="proposal-grid">
+                    {candData.items.map((item, idx) => (
+                        <div key={idx} className="proposal-card">
+                            <h3 style={{ marginBottom: '1rem', color: 'var(--scout-yellow)' }}>{item.title[language]}</h3>
+                            <p style={{ lineHeight: '1.4' }}>{item.desc[language]}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const TestimonialsSection = ({ testData }) => {
+    const { language } = useLanguage();
+    const { person, updatePerson } = usePerson();
+    const [name, setName] = React.useState('');
+    const [text, setText] = React.useState('');
+    const [photoUrl, setPhotoUrl] = React.useState('');
+    const [photoWithSaidUrl, setPhotoWithSaidUrl] = React.useState('');
+    const [isUploading, setIsUploading] = React.useState(false);
+    const [isUploadingWithSaid, setIsUploadingWithSaid] = React.useState(false);
+
+    const i18n = {
+        es: { addBtn: "Publicar", namePh: "Tu Nombre / Organización", textPh: "¿Cómo ha sido tu experiencia trabajando con Said?", photoBtn: "Tu Foto", photoWithSaidBtn: "Foto con Said (Opcional)", formTitle: "¡Suma tu Voz!", uploading: "Subiendo..." },
+        en: { addBtn: "Publish", namePh: "Your Name / Organization", textPh: "How has your experience working with Said been?", photoBtn: "Your Photo", photoWithSaidBtn: "Photo with Said (Optional)", formTitle: "Add your voice!", uploading: "Uploading..." },
+        pt: { addBtn: "Publicar", namePh: "Seu Nome / Organização", textPh: "Como foi sua experiência de trabalho com Said?", photoBtn: "Sua Foto", photoWithSaidBtn: "Foto com Said (Opcional)", formTitle: "Adicione sua voz!", uploading: "Enviando..." },
+        ar: { addBtn: "نشر", namePh: "اسمك / منظمتك", textPh: "كيف كانت تجربتك في العمل مع سعيد؟", photoBtn: "صورتك الشخصية", photoWithSaidBtn: "صورة مع سعيد (اختياري)", formTitle: "أضف صوتك!", uploading: "جاري الرفع..." }
+    };
+
+    const handlePhotoUpload = async (e, type) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (type === 'avatar') setIsUploading(true);
+        else setIsUploadingWithSaid(true);
+
+        try {
+            const url = await uploadToCloudinary(file);
+            if (type === 'avatar') setPhotoUrl(url);
+            else setPhotoWithSaidUrl(url);
+        } catch (error) {
+            console.error("Error uploading image:", error);
+            alert("No se pudo subir la imagen. Intenta de nuevo.");
+        } finally {
+            if (type === 'avatar') setIsUploading(false);
+            else setIsUploadingWithSaid(false);
+        }
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!name || !text) return;
+
+        const newTestimonial = {
+            name,
+            text: { es: text, en: text, pt: text, ar: text },
+            photo: photoUrl,
+            photoWithSaid: photoWithSaidUrl
+        };
+
+        const newData = { ...person };
+        newData.sections.testimonials.list.unshift(newTestimonial);
+        updatePerson(newData);
+
+        setName('');
+        setText('');
+        setPhotoUrl('');
+        setPhotoWithSaidUrl('');
+    };
+
+    const allTestimonials = testData?.list || [];
+
+    return (
+        <section id="testimonials" className="section" style={{ background: 'var(--white)' }}>
+            <div className="container">
+                <h2 className="section-title">
+                    {testData.title[language]} <i></i>
+                </h2>
+
+                <div className="add-testimonial-box">
+                    <h3 style={{ marginBottom: '1.5rem', color: 'var(--scout-purple)' }}>{i18n[language].formTitle}</h3>
+                    <form onSubmit={handleSubmit} className="testimonial-form">
+                        <div className="form-groups-inline">
+                            <div className="photo-upload-wrapper" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <label className="photo-upload-btn" style={{ opacity: isUploading ? 0.6 : 1, cursor: isUploading ? 'not-allowed' : 'pointer' }}>
+                                        {isUploading ? i18n[language].uploading : i18n[language].photoBtn}
+                                        <input type="file" accept="image/*" onChange={(e) => handlePhotoUpload(e, 'avatar')} hidden disabled={isUploading || isUploadingWithSaid} />
+                                    </label>
+                                    {photoUrl && <img src={photoUrl} alt="Preview" className="photo-preview" />}
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <label className="photo-upload-btn" style={{ background: 'var(--scout-purple)', opacity: isUploadingWithSaid ? 0.6 : 1, cursor: isUploadingWithSaid ? 'not-allowed' : 'pointer' }}>
+                                        {isUploadingWithSaid ? i18n[language].uploading : i18n[language].photoWithSaidBtn}
+                                        <input type="file" accept="image/*" onChange={(e) => handlePhotoUpload(e, 'withSaid')} hidden disabled={isUploading || isUploadingWithSaid} />
+                                    </label>
+                                    {photoWithSaidUrl && <img src={photoWithSaidUrl} alt="Preview with Said" className="photo-preview" style={{ borderRadius: '8px' }} />}
+                                </div>
+                            </div>
+                            <div className="form-group" style={{ flex: 1 }}>
+                                <input className="testimonial-input" value={name} onChange={e => setName(e.target.value)} placeholder={i18n[language].namePh} required />
+                            </div>
+                        </div>
+                        <div className="form-group" style={{ marginTop: '1rem' }}>
+                            <textarea className="testimonial-input" value={text} onChange={e => setText(e.target.value)} placeholder={i18n[language].textPh} rows={3} required />
+                        </div>
+                        <button type="submit" className="submit-testimonial-btn" disabled={isUploading}>{i18n[language].addBtn}</button>
+                    </form>
+                </div>
+
+                <div className="testimonial-grid" style={{ marginTop: '3rem' }}>
+                    {allTestimonials.map((item, idx) => (
+                        <div key={idx} className="testimonial-card" style={{ display: 'flex', flexDirection: 'column' }}>
+                            {item.photoWithSaid && (
+                                <img src={item.photoWithSaid} alt="Momento con Said" style={{ width: '100%', height: '220px', objectFit: 'cover', borderRadius: '12px', marginBottom: '1.5rem', boxShadow: '0 5px 15px rgba(0,0,0,0.1)' }} />
+                            )}
+                            <p className="testimonial-text-content" style={{ marginBottom: '1.5rem', flex: 1 }}>"{item.text[language]}"</p>
+                            <footer className="testimonial-footer">
+                                {item.photo && <img src={item.photo} alt={item.name} className="testimonial-photo" />}
+                                <span>{item.name}</span>
+                            </footer>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const BioSection = ({ bioData }) => {
+    const { language } = useLanguage();
+    return (
+        <section id="profile" className="section" style={{ background: 'var(--white)' }}>
+            <div className="container">
+                <h2 className="section-title">
+                    {bioData.title[language]} <i></i>
+                </h2>
+                <div className="bio-grid">
+                    <div className="bio-main">
+                        <p className="bio-text">
+                            {bioData.paragraph?.[language]}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+
+
+const ContactLinks = ({ contactData, socialLinks }) => {
+    const { language } = useLanguage();
+
+    return (
+        <section id="contact" className="section" style={{ background: 'var(--white)' }}>
+            <div className="container" style={{ textAlign: 'center' }}>
+                <h2 className="section-title" style={{ justifyContent: 'center' }}>
+                    {contactData.title[language]}
+                </h2>
+                <p style={{ marginBottom: '3rem', fontWeight: '500', color: 'var(--scout-blue)' }}>{contactData.subtitle[language]}</p>
+                <div className="link-grid">
+                    {socialLinks.map((link, idx) => (
+                        <a key={idx} href={link.url} target="_blank" rel="noopener noreferrer" className="social-button">
+                            <div className="platform-info">
+                                <span style={{ fontSize: '1.5rem' }}>{link.icon}</span>
+                                <span>{link.platform}</span>
+                            </div>
+                            <span>➜</span>
+                        </a>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const SocialLinks = () => (
+    <footer style={{ background: 'linear-gradient(135deg, #1a0533 0%, #3d1a78 50%, #6a1fc2 100%)', color: 'white', padding: '5rem 2rem 3rem', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(255,255,255,0.05) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        <p style={{
+            fontFamily: "'Outfit', sans-serif",
+            fontSize: 'clamp(1rem, 2.5vw, 1.5rem)',
+            fontStyle: 'italic',
+            fontWeight: '300',
+            letterSpacing: '0.02em',
+            color: 'rgba(255,255,255,0.7)',
+            margin: '0 auto 0.6rem',
+        }}>
+            Tranquilo…
+        </p>
+        <h2 style={{
+            fontFamily: "'Outfit', sans-serif",
+            fontSize: 'clamp(1.2rem, 3.5vw, 2.2rem)',
+            fontWeight: '800',
+            lineHeight: '1.3',
+            maxWidth: '700px',
+            margin: '0 auto 3rem',
+            background: 'linear-gradient(90deg, #fff 0%, #d4b6ff 50%, #a78bfa 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+        }}>
+            solo estoy intentando que más jóvenes lideren el mundo.
+        </h2>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', opacity: 0.5 }}>
+            <p style={{ fontSize: '0.8rem', fontWeight: '600', letterSpacing: '0.05em', margin: 0 }}>
+                © {new Date().getFullYear()} SAID ORTEGA
+            </p>
+            <Link to="/mando" style={{ color: 'white', textDecoration: 'none', fontSize: '0.8rem', opacity: 0.6, transition: 'opacity 0.2s' }} onMouseEnter={e => e.currentTarget.style.opacity = 1} onMouseLeave={e => e.currentTarget.style.opacity = 0.6}>
+                🔒
+            </Link>
+        </div>
+    </footer>
+);
+
+const GallerySection = ({ galleryData }) => {
+    const { language } = useLanguage();
+    if (!galleryData) return null;
+
+    return (
+        <section id="gallery" className="section" style={{ background: 'var(--bg-light)' }}>
+            <div className="container">
+                <h2 className="section-title">
+                    {galleryData.title[language]} <i></i>
+                </h2>
+                <div className="gallery-grid">
+                    {galleryData.images.map((src, idx) => (
+                        <div key={idx} className="gallery-item">
+                            <img src={src} alt={`Moment ${idx + 1}`} loading="lazy" />
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const ClosingPhrase = () => (
+    <section
+        id="closing"
+        style={{
+            background: 'linear-gradient(135deg, #1a0533 0%, #3d1a78 50%, #6a1fc2 100%)',
+            color: 'white',
+            padding: '6rem 2rem',
+            textAlign: 'center',
+            position: 'relative',
+            overflow: 'hidden',
+        }}
+    >
+        <div style={{
+            position: 'absolute', inset: 0,
+            background: 'radial-gradient(ellipse at center, rgba(255,255,255,0.05) 0%, transparent 70%)',
+            pointerEvents: 'none'
+        }} />
+        <p style={{
+            fontFamily: "'Outfit', sans-serif",
+            fontSize: 'clamp(1.2rem, 3vw, 2rem)',
+            fontStyle: 'italic',
+            fontWeight: '300',
+            letterSpacing: '0.02em',
+            lineHeight: '1.6',
+            opacity: 0.9,
+            maxWidth: '760px',
+            margin: '0 auto 1.2rem',
+            color: 'rgba(255,255,255,0.75)'
+        }}>
+            Tranquilo…
+        </p>
+        <h2 style={{
+            fontFamily: "'Outfit', sans-serif",
+            fontSize: 'clamp(1.4rem, 4vw, 2.6rem)',
+            fontWeight: '800',
+            letterSpacing: '-0.01em',
+            lineHeight: '1.3',
+            maxWidth: '760px',
+            margin: '0 auto',
+            background: 'linear-gradient(90deg, #fff 0%, #d4b6ff 50%, #a78bfa 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+        }}>
+            solo estoy intentando que más jóvenes lideren el mundo.
+        </h2>
+    </section>
+);
+
+export { Navbar, Hero, VisionSection, BioSection, ExperienceSection, CandidacySection, TestimonialsSection, GallerySection, ContactLinks, SocialLinks, ClosingPhrase };
+
