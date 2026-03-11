@@ -1,46 +1,64 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import PersonModel from '../models/PersonModel';
 import { db } from '../firebase';
-import { doc, onSnapshot, setDoc, getDoc } from 'firebase/firestore';
+import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 
 const PersonContext = createContext();
 
 export const PersonProvider = ({ children }) => {
     const [person, setPerson] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [dbStatus, setDbStatus] = useState('connecting'); // 'connecting', 'online', 'error', 'offline'
 
     useEffect(() => {
         const initialData = PersonModel.getInitialData();
         const docRef = doc(db, 'web_data', 'said_web');
 
-        // Escuchar cambios en tiempo real desde Firestore
-        const unsubscribe = onSnapshot(docRef, (docSnap) => {
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                
-                // Si la versión del código es distinta a la de la DB, sincronizamos
-                if (data.version !== initialData.version) {
-                    console.log("Detectada nueva versión en código, actualizando DB...");
-                    const syncedData = { ...initialData };
-                    setDoc(docRef, syncedData);
-                    setPerson(syncedData);
+        console.log("Iniciando conexión con Firestore...");
+
+        const unsubscribe = onSnapshot(docRef, 
+            async (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    console.log("Datos recibidos de Firestore:", data.version);
+                    
+                    if (data.version !== initialData.version) {
+                        console.log("Sincronizando versiones...");
+                        // Mantenemos settings del usuario pero actualizamos estructura
+                        const syncedData = { ...initialData, settings: data.settings || initialData.settings };
+                        try {
+                            await setDoc(docRef, syncedData);
+                            setPerson(syncedData);
+                        } catch (e) {
+                            console.error("Error sincronizando versión:", e);
+                        }
+                    } else {
+                        setPerson(data);
+                    }
+                    setDbStatus('online');
                 } else {
-                    setPerson(data);
+                    console.log("Documento no existe. Creando inicial...");
+                    try {
+                        const dataToSave = { ...initialData, settings: { candidacyEnabled: true } };
+                        await setDoc(docRef, dataToSave);
+                        setPerson(dataToSave);
+                        setDbStatus('online');
+                    } catch (e) {
+                        console.error("Error creando documento inicial:", e);
+                        setDbStatus('error');
+                        setPerson(initialData);
+                    }
                 }
-            } else {
-                // Si no existe el documento en Firestore, lo creamos con initialData
-                console.log("Inicializando Firestore con datos por defecto...");
-                const dataToSave = { ...initialData, settings: { candidacyEnabled: true } };
-                setDoc(docRef, dataToSave);
-                setPerson(dataToSave);
+                setLoading(false);
+            }, 
+            (error) => {
+                console.error("Fallo crítico de Firestore:", error.code, error.message);
+                setDbStatus('error');
+                // Si falla la nube, usamos datos locales/hardcoded para que la web no muera
+                setPerson(initialData);
+                setLoading(false);
             }
-            setLoading(false);
-        }, (error) => {
-            console.error("Error en Firestore Listener:", error);
-            // Fallback si falla Firestore por reglas de seguridad aún no activadas
-            setPerson(initialData);
-            setLoading(false);
-        });
+        );
 
         return () => unsubscribe();
     }, []);
@@ -48,15 +66,17 @@ export const PersonProvider = ({ children }) => {
     const updatePerson = async (newData) => {
         try {
             const docRef = doc(db, 'web_data', 'said_web');
-            await setDoc(docRef, newData);
-            setPerson({...newData});
+            await setDoc(docRef, { ...newData, lastUpdate: new Date().toISOString() });
+            // No hacemos setPerson aquí, dejamos que onSnapshot lo haga para confirmar el sync real
         } catch (error) {
-            console.error("Error guardando en Firestore:", error);
+            console.error("Error al guardar en la nube:", error);
+            alert("⚠️ Error al guardar: Revisa si activaste el 'Modo de Prueba' en las reglas de Firebase.");
+            throw error;
         }
     };
 
     return (
-        <PersonContext.Provider value={{ person, loading, updatePerson }}>
+        <PersonContext.Provider value={{ person, loading, updatePerson, dbStatus }}>
             {children}
         </PersonContext.Provider>
     );

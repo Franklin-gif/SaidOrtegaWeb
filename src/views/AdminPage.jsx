@@ -55,11 +55,12 @@ const AdminPage = () => {
     }
 
     return (
-        <AdminDashboard person={person} updatePerson={updatePerson} />
+        <AdminDashboard />
     );
 };
 
-const AdminDashboard = ({ person, updatePerson }) => {
+const AdminDashboard = () => {
+    const { person, updatePerson, dbStatus } = usePerson();
     const [activeTab, setActiveTab] = useState('dashboard');
     const [showToast, setShowToast] = useState(false);
     const [toastMsg, setToastMsg] = useState('');
@@ -337,8 +338,18 @@ const AdminDashboard = ({ person, updatePerson }) => {
                     {/* Header */}
                     <div style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1rem' }}>
                         <div>
-                            <p style={{ margin: 0, color: 'var(--scout-purple)', fontWeight: '800', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Said Ortega</p>
-                            <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: '900', margin: '0.5rem 0 0', color: '#111', fontFamily: 'Outfit, sans-serif' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                                <p style={{ margin: 0, color: 'var(--scout-purple)', fontWeight: '800', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Said Ortega</p>
+                                <div style={{ 
+                                    padding: '2px 8px', borderRadius: '20px', fontSize: '0.65rem', fontWeight: '900',
+                                    background: dbStatus === 'online' ? '#dcfce7' : dbStatus === 'error' ? '#fee2e2' : '#fef9c3',
+                                    color: dbStatus === 'online' ? '#166534' : dbStatus === 'error' ? '#991b1b' : '#854d0e',
+                                    border: '1px solid currentColor'
+                                }}>
+                                    ● CLOUD {dbStatus.toUpperCase()}
+                                </div>
+                            </div>
+                            <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: '900', margin: '0', color: '#111', fontFamily: 'Outfit, sans-serif' }}>
                                 {tabs.find(t => t.id === activeTab).label}
                             </h2>
                         </div>
