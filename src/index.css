@@ -407,12 +407,20 @@ h4 {
 }
 
 .testimonial-card {
-  background: var(--bg-light);
-  padding: 2.5rem;
-  border-radius: var(--radius);
-  border-left: 6px solid var(--scout-green);
-  font-style: italic;
-  position: relative;
+  background: var(--white);
+  padding: 2rem;
+  border-radius: 20px;
+  border: 1px solid #eee;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.02);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.05);
+  border-color: var(--scout-green);
 }
 
 .testimonial-card::after {

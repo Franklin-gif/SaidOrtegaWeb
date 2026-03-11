@@ -229,9 +229,18 @@ const TestimonialsSection = ({ testData }) => {
         }
     };
 
+    const getCharCount = (str) => {
+        return str.length;
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!name || !text) return;
+
+        if (getCharCount(text) > 200) {
+            alert(language === 'es' ? "El testimonio no puede exceder los 200 caracteres para mantener la uniformidad." : "Testimonial cannot exceed 200 characters for uniformity.");
+            return;
+        }
 
         const newTestimonial = {
             name,
@@ -283,23 +292,59 @@ const TestimonialsSection = ({ testData }) => {
                                 <input className="testimonial-input" value={name} onChange={e => setName(e.target.value)} placeholder={i18n[language].namePh} required />
                             </div>
                         </div>
-                        <div className="form-group" style={{ marginTop: '1rem' }}>
-                            <textarea className="testimonial-input" value={text} onChange={e => setText(e.target.value)} placeholder={i18n[language].textPh} rows={3} required />
+                        <div className="form-group" style={{ marginTop: '1rem', position: 'relative' }}>
+                            <textarea className="testimonial-input" value={text} onChange={e => setText(e.target.value)} placeholder={i18n[language].textPh} rows={3} maxLength={220} required />
+                            <div style={{ 
+                                textAlign: 'right', 
+                                fontSize: '0.75rem', 
+                                marginTop: '0.3rem', 
+                                color: getCharCount(text) > 200 ? 'red' : 'gray',
+                                fontWeight: '600'
+                            }}>
+                                {getCharCount(text)} / 200 {language === 'es' ? 'caracteres' : 'characters'}
+                            </div>
                         </div>
-                        <button type="submit" className="submit-testimonial-btn" disabled={isUploading}>{i18n[language].addBtn}</button>
+                        <button type="submit" className="submit-testimonial-btn" disabled={isUploading || getCharCount(text) > 200}>{i18n[language].addBtn}</button>
                     </form>
                 </div>
 
                 <div className="testimonial-grid" style={{ marginTop: '3rem' }}>
                     {allTestimonials.map((item, idx) => (
-                        <div key={idx} className="testimonial-card" style={{ display: 'flex', flexDirection: 'column' }}>
-                            {item.photoWithSaid && (
-                                <img src={item.photoWithSaid} alt="Momento con Said" style={{ width: '100%', height: '220px', objectFit: 'cover', borderRadius: '12px', marginBottom: '1.5rem', boxShadow: '0 5px 15px rgba(0,0,0,0.1)' }} />
-                            )}
-                            <p className="testimonial-text-content" style={{ marginBottom: '1.5rem', flex: 1 }}>"{item.text[language]}"</p>
+                        <div key={idx} className="testimonial-card" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                            <div style={{ 
+                                width: '100%', 
+                                height: '240px', 
+                                borderRadius: '12px', 
+                                marginBottom: '1.5rem', 
+                                overflow: 'hidden',
+                                background: '#f0f0f0',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}>
+                                {item.photoWithSaid ? (
+                                    <img src={item.photoWithSaid} alt="Momento con Said" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                ) : (
+                                    <div style={{ color: '#ccc', fontSize: '3rem' }}>📸</div>
+                                )}
+                            </div>
+                            <p className="testimonial-text-content" style={{ 
+                                marginBottom: '1.5rem', 
+                                flex: 1,
+                                display: '-webkit-box',
+                                WebkitLineClamp: 6,
+                                WebkitBoxOrient: 'vertical',
+                                overflow: 'hidden'
+                            }}>"{item.text[language]}"</p>
                             <footer className="testimonial-footer">
-                                {item.photo && <img src={item.photo} alt={item.name} className="testimonial-photo" />}
-                                <span>{item.name}</span>
+                                <div style={{ width: '45px', height: '45px', borderRadius: '50%', overflow: 'hidden', flexShrink: 0, border: '2px solid var(--scout-coral)' }}>
+                                    {item.photo ? (
+                                        <img src={item.photo} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                    ) : (
+                                        <div style={{ background: 'var(--scout-purple)', width: '100%', height: '100%', display: 'grid', placeItems: 'center', color: 'white' }}>{item.name[0]}</div>
+                                    )}
+                                </div>
+                                <span style={{ fontWeight: '800' }}>{item.name}</span>
                             </footer>
                         </div>
                     ))}

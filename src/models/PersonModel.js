@@ -219,12 +219,12 @@ const PersonModel = {
                 title: { pt: "Lo que dicen sobre Said", en: "What they say", es: "Lo que dicen sobre Said", ar: "شهادات" },
                 list: [
                     {
-                        name: "Líder Regional Scout",
+                        name: "Franklin Bernal",
                         text: {
-                            es: "Said demuestra una capacidad excepcional de conectar jóvenes y generar cambios reales.",
-                            en: "Said demonstrates an exceptional ability to connect youth and generate real change.",
-                            pt: "Said demonstra uma capacidade excepcional de conectar jovens e gerar mudanças reais.",
-                            ar: "يظهر سعيد قدرة استثنائية على التواصل مع الشباب وإحداث تغيير حقيقي."
+                            es: "Said es un líder excepcional. Su compromiso con el empoderamiento juvenil y el escultismo ha transformado nuestra comunidad, inspirando a cientos de jóvenes a liderar con propósito y valores.",
+                            en: "Said is an exceptional leader. His commitment to youth empowerment and scouting has transformed our community, inspiring hundreds of young people to lead with purpose and values.",
+                            pt: "Said é um líder excepcional. Seu compromisso transformou nossa comunidade, inspirando centenas de jovens.",
+                            ar: "سعيد قائد استثنائي. لقد حول التزامه بتمكين الشباب والكشافة مجتمعنا."
                         },
                         photo: "/hero_profile_media__1772899441601.jpg"
                     },
@@ -264,7 +264,7 @@ const PersonModel = {
             { platform: "Email", url: "mailto:saidortega102004@gmail.com", icon: "✉️" }
         ],
         imagePath: "/hero_profile_media__1772899441601.jpg",
-        version: "1.2.0" // Increment this whenever you want to force all devices to update
+        version: "1.2.1" // Increment this whenever you want to force all devices to update
     })
 };
 
