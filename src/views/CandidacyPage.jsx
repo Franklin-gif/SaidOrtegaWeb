@@ -141,8 +141,10 @@ const CandidacyPage = () => {
                     
                     <div className="animate-fade-in-up" style={{ textAlign: 'center', marginTop: '4rem' }}>
                         <div style={{ position: 'relative', display: 'inline-block' }}>
-                            <button 
-                                onClick={() => setShowPdf(true)}
+                            <a 
+                                href={candidacy.proposalPdfUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 15px 30px rgba(0,0,0,0.15)'; }}
                                 onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = 'none'; }}
                                 style={{
@@ -159,12 +161,13 @@ const CandidacyPage = () => {
                                     alignItems: 'center',
                                     gap: '1rem',
                                     position: 'relative',
-                                    zIndex: 2
+                                    zIndex: 2,
+                                    textDecoration: 'none'
                                 }}
                             >
                                 <span style={{ fontSize: '1.8rem', color: 'white' }}>📄</span> 
                                 {language === 'es' ? 'Ver Propuesta Completa' : language === 'en' ? 'View Full Proposal' : language === 'pt' ? 'Ver Proposta Completa' : 'عرض المقترح الكامل'}
-                            </button>
+                            </a>
                             <img 
                                 src="/idea.png" 
                                 alt="Idea Emoji" 
@@ -221,31 +224,6 @@ const CandidacyPage = () => {
                 </div>
             )}
 
-            {/* PDF Modal */}
-            {showPdf && (
-                <div style={{
-                    position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
-                    background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(10px)',
-                    display: 'flex', justifyContent: 'center', alignItems: 'center',
-                    zIndex: 2000, padding: '2rem'
-                }} onClick={() => setShowPdf(false)}>
-                    <div className="pdf-modal-inner" style={{
-                        background: 'white', borderRadius: '15px', overflow: 'hidden',
-                        maxWidth: '900px', width: '100%', height: '90vh', position: 'relative',
-                        boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
-                        display: 'flex', flexDirection: 'column'
-                    }} onClick={e => e.stopPropagation()}>
-                        <div style={{ background: 'var(--scout-purple)', padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white' }}>
-                            <h3 style={{ margin: 0, color: 'var(--scout-yellow)' }}>DOC</h3>
-                            <button onClick={() => setShowPdf(false)} style={{ background: 'white', border: 'none', borderRadius: '50%', width: '30px', height: '30px', cursor: 'pointer' }}>✕</button>
-                        </div>
-                        <iframe 
-                            src={candidacy.proposalPdfUrl} 
-                            style={{ width: '100%', height: '100%', border: 'none' }}
-                        ></iframe>
-                    </div>
-                </div>
-            )}
 
             <SocialLinks />
         </main>
