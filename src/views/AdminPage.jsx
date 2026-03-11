@@ -346,7 +346,7 @@ const AdminDashboard = () => {
                                     color: dbStatus === 'online' ? '#166534' : dbStatus === 'error' ? '#991b1b' : '#854d0e',
                                     border: '1px solid currentColor'
                                 }}>
-                                    ● CLOUD {dbStatus.toUpperCase()}
+                                    ● {dbStatus === 'online' ? 'SINCRONIZADO' : `CLOUD ${dbStatus.toUpperCase()}`}
                                 </div>
                             </div>
                             <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: '900', margin: '0', color: '#111', fontFamily: 'Outfit, sans-serif' }}>

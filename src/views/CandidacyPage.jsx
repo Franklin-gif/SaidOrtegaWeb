@@ -184,11 +184,6 @@ const CandidacyPage = () => {
                                 }} 
                             />
                         </div>
-                        <div style={{ marginTop: '1.5rem' }}>
-                            <a href={candidacy.proposalPdfUrl} download style={{ color: 'var(--scout-purple)', fontWeight: '700', textDecoration: 'underline' }}>
-                                {language === 'es' ? 'Descargar Propuesta' : language === 'en' ? 'Download Proposal' : language === 'pt' ? 'Baixar Proposta' : 'تنزيل المقترح'}
-                            </a>
-                        </div>
                     </div>
                 </div>
             </section>

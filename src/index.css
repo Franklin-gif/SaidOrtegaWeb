@@ -163,6 +163,13 @@ h4 {
   margin-bottom: 1rem;
 }
 
+@media (max-width: 768px) {
+  .shapes-decor {
+    justify-content: center;
+    margin-bottom: 0.5rem;
+  }
+}
+
 .shape {
   width: 14px;
   height: 14px;
