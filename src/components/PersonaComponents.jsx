@@ -313,19 +313,20 @@ const TestimonialsSection = ({ testData }) => {
                         <div key={idx} className="testimonial-card" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                             <div style={{ 
                                 width: '100%', 
-                                height: '240px', 
+                                height: '160px', 
                                 borderRadius: '12px', 
-                                marginBottom: '1.5rem', 
+                                marginBottom: '1.2rem', 
                                 overflow: 'hidden',
-                                background: '#f0f0f0',
+                                background: '#f8fafc',
                                 display: 'flex',
                                 alignItems: 'center',
-                                justifyContent: 'center'
+                                justifyContent: 'center',
+                                border: '1px solid #f1f5f9'
                             }}>
                                 {item.photoWithSaid ? (
-                                    <img src={item.photoWithSaid} alt="Momento con Said" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                    <img src={item.photoWithSaid} alt="Momento con Said" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                                 ) : (
-                                    <div style={{ color: '#ccc', fontSize: '3rem' }}>📸</div>
+                                    <div style={{ color: '#cbd5e1', fontSize: '2.5rem' }}>📸</div>
                                 )}
                             </div>
                             <p className="testimonial-text-content" style={{ 
