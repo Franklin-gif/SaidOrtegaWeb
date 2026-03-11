@@ -237,8 +237,8 @@ const TestimonialsSection = ({ testData }) => {
         e.preventDefault();
         if (!name || !text) return;
 
-        if (getCharCount(text) > 200) {
-            alert(language === 'es' ? "El testimonio no puede exceder los 200 caracteres para mantener la uniformidad." : "Testimonial cannot exceed 200 characters for uniformity.");
+        if (getCharCount(text) > 300) {
+            alert(language === 'es' ? "El testimonio no puede exceder los 300 caracteres para mantener la uniformidad." : "Testimonial cannot exceed 300 characters for uniformity.");
             return;
         }
 
@@ -293,18 +293,18 @@ const TestimonialsSection = ({ testData }) => {
                             </div>
                         </div>
                         <div className="form-group" style={{ marginTop: '1rem', position: 'relative' }}>
-                            <textarea className="testimonial-input" value={text} onChange={e => setText(e.target.value)} placeholder={i18n[language].textPh} rows={3} maxLength={220} required />
+                            <textarea className="testimonial-input" value={text} onChange={e => setText(e.target.value)} placeholder={i18n[language].textPh} rows={3} maxLength={320} required />
                             <div style={{ 
                                 textAlign: 'right', 
                                 fontSize: '0.75rem', 
                                 marginTop: '0.3rem', 
-                                color: getCharCount(text) > 200 ? 'red' : 'gray',
+                                color: getCharCount(text) > 300 ? 'red' : 'gray',
                                 fontWeight: '600'
                             }}>
-                                {getCharCount(text)} / 200 {language === 'es' ? 'caracteres' : 'characters'}
+                                {getCharCount(text)} / 300 {language === 'es' ? 'caracteres' : 'characters'}
                             </div>
                         </div>
-                        <button type="submit" className="submit-testimonial-btn" disabled={isUploading || getCharCount(text) > 200}>{i18n[language].addBtn}</button>
+                        <button type="submit" className="submit-testimonial-btn" disabled={isUploading || getCharCount(text) > 300}>{i18n[language].addBtn}</button>
                     </form>
                 </div>
 
