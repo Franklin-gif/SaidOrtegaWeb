@@ -165,7 +165,7 @@ h4 {
 
 @media (max-width: 768px) {
   .shapes-decor {
-    justify-content: center;
+    justify-content: flex-start;
     margin-bottom: 0.5rem;
   }
 }
@@ -893,7 +893,7 @@ h4 {
 
   .hero-grid {
     grid-template-columns: 1fr;
-    text-align: center;
+    text-align: left;
   }
 
   .hero-content {
@@ -907,8 +907,8 @@ h4 {
   }
 
   .name-banner {
-    justify-content: center;
-    flex-wrap: wrap;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
   }
 
   .section-title {
