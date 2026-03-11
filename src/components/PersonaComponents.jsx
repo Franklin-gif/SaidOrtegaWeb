@@ -260,6 +260,10 @@ const TestimonialsSection = ({ testData }) => {
     };
 
     const allTestimonials = testData?.list || [];
+    const [selectedTestimonial, setSelectedTestimonial] = React.useState(null);
+
+    const openModal = (t) => setSelectedTestimonial(t);
+    const closeModal = () => setSelectedTestimonial(null);
 
     return (
         <section id="testimonials" className="section" style={{ background: 'var(--white)' }}>
@@ -310,10 +314,15 @@ const TestimonialsSection = ({ testData }) => {
 
                 <div className="testimonial-grid" style={{ marginTop: '3rem' }}>
                     {allTestimonials.map((item, idx) => (
-                        <div key={idx} className="testimonial-card" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                        <div 
+                            key={idx} 
+                            className="testimonial-card" 
+                            style={{ display: 'flex', flexDirection: 'column', height: '100%', cursor: 'pointer' }}
+                            onClick={() => openModal(item)}
+                        >
                             <div style={{ 
                                 width: '100%', 
-                                height: '220px', 
+                                height: '180px', 
                                 borderRadius: '15px', 
                                 marginBottom: '1.2rem', 
                                 overflow: 'hidden',
@@ -322,23 +331,20 @@ const TestimonialsSection = ({ testData }) => {
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                border: '1px solid #f1f5f9',
-                                boxShadow: 'inset 0 0 40px rgba(0,0,0,0.05)'
+                                border: '1px solid #f1f5f9'
                             }}>
                                 {item.photoWithSaid ? (
                                     <>
-                                        {/* Blurred Background Layer to fill space beautifully */}
                                         <div style={{
                                             position: 'absolute',
                                             top: -10, left: -10, right: -10, bottom: -10,
                                             backgroundImage: `url(${item.photoWithSaid})`,
                                             backgroundSize: 'cover',
                                             backgroundPosition: 'center',
-                                            filter: 'blur(15px) brightness(0.9)',
-                                            opacity: 0.4,
+                                            filter: 'blur(10px) brightness(0.95)',
+                                            opacity: 0.3,
                                             zIndex: 0
                                         }} />
-                                        {/* Main Photo Layer (Full visibility) */}
                                         <img 
                                             src={item.photoWithSaid} 
                                             alt="Momento con Said" 
@@ -349,35 +355,95 @@ const TestimonialsSection = ({ testData }) => {
                                                 maxHeight: '90%', 
                                                 objectFit: 'contain',
                                                 borderRadius: '8px',
-                                                boxShadow: '0 10px 25px rgba(0,0,0,0.15)'
+                                                boxShadow: '0 5px 15px rgba(0,0,0,0.1)'
                                             }} 
                                         />
                                     </>
                                 ) : (
-                                    <div style={{ color: '#cbd5e1', fontSize: '3rem' }}>📸</div>
+                                    <div style={{ color: '#cbd5e1', fontSize: '2.5rem' }}>📸</div>
                                 )}
                             </div>
-                            <p className="testimonial-text-content" style={{ 
+                            <div className="testimonial-text-content" style={{ 
                                 marginBottom: '1.5rem', 
                                 flex: 1,
                                 display: '-webkit-box',
-                                WebkitLineClamp: 6,
+                                WebkitLineClamp: 4,
                                 WebkitBoxOrient: 'vertical',
-                                overflow: 'hidden'
-                            }}>"{item.text[language]}"</p>
+                                overflow: 'hidden',
+                                fontStyle: 'italic'
+                            }}>"{item.text[language]}"</div>
+                            
+                            {item.text[language].length > 120 && (
+                                <span style={{ color: 'var(--scout-purple)', fontWeight: '800', fontSize: '0.8rem', marginBottom: '1rem', display: 'block' }}>
+                                    {language === 'es' ? 'Ver más...' : 'Read more...'}
+                                </span>
+                            )}
+
                             <footer className="testimonial-footer">
-                                <div style={{ width: '45px', height: '45px', borderRadius: '50%', overflow: 'hidden', flexShrink: 0, border: '2px solid var(--scout-coral)' }}>
+                                <div style={{ width: '40px', height: '40px', borderRadius: '50%', overflow: 'hidden', flexShrink: 0, border: '2px solid var(--scout-coral)' }}>
                                     {item.photo ? (
                                         <img src={item.photo} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                     ) : (
                                         <div style={{ background: 'var(--scout-purple)', width: '100%', height: '100%', display: 'grid', placeItems: 'center', color: 'white' }}>{item.name[0]}</div>
                                     )}
                                 </div>
-                                <span style={{ fontWeight: '800' }}>{item.name}</span>
+                                <span style={{ fontWeight: '800', fontSize: '0.9rem' }}>{item.name}</span>
                             </footer>
                         </div>
                     ))}
                 </div>
+
+                {/* Testimonial Modal */}
+                {selectedTestimonial && (
+                    <div className="t-modal-overlay" onClick={closeModal} style={{
+                        position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+                        background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(5px)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        zIndex: 2000, padding: '1rem'
+                    }}>
+                        <div className="t-modal-content animate-scale-in" onClick={e => e.stopPropagation()} style={{
+                            background: 'white', borderRadius: '24px', maxWidth: '600px', width: '100%',
+                            maxHeight: '90vh', overflowY: 'auto', padding: '2.5rem', position: 'relative'
+                        }}>
+                            <button onClick={closeModal} style={{
+                                position: 'absolute', top: '1.5rem', right: '1.5rem',
+                                background: '#f1f5f9', border: 'none', borderRadius: '50%',
+                                width: '36px', height: '36px', cursor: 'pointer',
+                                fontSize: '1.2rem', display: 'grid', placeItems: 'center'
+                            }}>✕</button>
+
+                            {selectedTestimonial.photoWithSaid && (
+                                <div style={{ 
+                                    width: '100%', height: 'auto', maxHeight: '400px',
+                                    borderRadius: '16px', overflow: 'hidden', marginBottom: '2rem',
+                                    background: '#f8fafc', border: '1px solid #eee'
+                                }}>
+                                    <img src={selectedTestimonial.photoWithSaid} alt="Full view" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                                </div>
+                            )}
+
+                            <div style={{ marginBottom: '2rem' }}>
+                                <p style={{ fontSize: '1.2rem', lineHeight: '1.6', fontStyle: 'italic', color: 'var(--text-dark)' }}>
+                                    "{selectedTestimonial.text[language]}"
+                                </p>
+                            </div>
+
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', borderTop: '1px solid #f1f5f9', paddingTop: '1.5rem' }}>
+                                <div style={{ width: '50px', height: '50px', borderRadius: '50%', overflow: 'hidden', border: '2px solid var(--scout-coral)' }}>
+                                    {selectedTestimonial.photo ? (
+                                        <img src={selectedTestimonial.photo} alt={selectedTestimonial.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                    ) : (
+                                        <div style={{ background: 'var(--scout-purple)', width: '100%', height: '100%', display: 'grid', placeItems: 'center', color: 'white' }}>{selectedTestimonial.name[0]}</div>
+                                    )}
+                                </div>
+                                <div>
+                                    <h4 style={{ margin: 0, color: 'var(--scout-purple)', textTransform: 'none', letterSpacing: '0' }}>{selectedTestimonial.name}</h4>
+                                    <p style={{ margin: 0, fontSize: '0.85rem', opacity: 0.6 }}>Testimonio verificado</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </section>
     );
