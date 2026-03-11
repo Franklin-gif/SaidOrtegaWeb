@@ -313,20 +313,48 @@ const TestimonialsSection = ({ testData }) => {
                         <div key={idx} className="testimonial-card" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                             <div style={{ 
                                 width: '100%', 
-                                height: '160px', 
-                                borderRadius: '12px', 
+                                height: '220px', 
+                                borderRadius: '15px', 
                                 marginBottom: '1.2rem', 
                                 overflow: 'hidden',
-                                background: '#f8fafc',
+                                background: '#f1f5f9',
+                                position: 'relative',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                border: '1px solid #f1f5f9'
+                                border: '1px solid #f1f5f9',
+                                boxShadow: 'inset 0 0 40px rgba(0,0,0,0.05)'
                             }}>
                                 {item.photoWithSaid ? (
-                                    <img src={item.photoWithSaid} alt="Momento con Said" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                                    <>
+                                        {/* Blurred Background Layer to fill space beautifully */}
+                                        <div style={{
+                                            position: 'absolute',
+                                            top: -10, left: -10, right: -10, bottom: -10,
+                                            backgroundImage: `url(${item.photoWithSaid})`,
+                                            backgroundSize: 'cover',
+                                            backgroundPosition: 'center',
+                                            filter: 'blur(15px) brightness(0.9)',
+                                            opacity: 0.4,
+                                            zIndex: 0
+                                        }} />
+                                        {/* Main Photo Layer (Full visibility) */}
+                                        <img 
+                                            src={item.photoWithSaid} 
+                                            alt="Momento con Said" 
+                                            style={{ 
+                                                position: 'relative',
+                                                zIndex: 1,
+                                                maxWidth: '90%', 
+                                                maxHeight: '90%', 
+                                                objectFit: 'contain',
+                                                borderRadius: '8px',
+                                                boxShadow: '0 10px 25px rgba(0,0,0,0.15)'
+                                            }} 
+                                        />
+                                    </>
                                 ) : (
-                                    <div style={{ color: '#cbd5e1', fontSize: '2.5rem' }}>📸</div>
+                                    <div style={{ color: '#cbd5e1', fontSize: '3rem' }}>📸</div>
                                 )}
                             </div>
                             <p className="testimonial-text-content" style={{ 
