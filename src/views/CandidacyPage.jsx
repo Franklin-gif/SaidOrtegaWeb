@@ -141,10 +141,8 @@ const CandidacyPage = () => {
                     
                     <div className="animate-fade-in-up" style={{ textAlign: 'center', marginTop: '4rem' }}>
                         <div style={{ position: 'relative', display: 'inline-block' }}>
-                            <a 
-                                href={candidacy.proposalPdfUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
+                            <button 
+                                onClick={() => setShowPdf(true)}
                                 onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 15px 30px rgba(0,0,0,0.15)'; }}
                                 onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = 'none'; }}
                                 style={{
@@ -167,7 +165,7 @@ const CandidacyPage = () => {
                             >
                                 <span style={{ fontSize: '1.8rem', color: 'white' }}>📄</span> 
                                 {language === 'es' ? 'Ver Propuesta Completa' : language === 'en' ? 'View Full Proposal' : language === 'pt' ? 'Ver Proposta Completa' : 'عرض المقترح الكامل'}
-                            </a>
+                            </button>
                             <img 
                                 src="/idea.png" 
                                 alt="Idea Emoji" 
@@ -188,7 +186,7 @@ const CandidacyPage = () => {
                 </div>
             </section>
             
-            {/* Modal */}
+            {/* Modal de Propuestas Individuales */}
             {selectedItem && (
                 <div style={{
                     position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
@@ -206,7 +204,7 @@ const CandidacyPage = () => {
                         
                         <div style={{ position: 'relative', height: '200px' }}>
                             <img src={selectedItem.image} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                            <button onClick={() => setSelectedItem(null)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'white', border: 'none', borderRadius: '50%', width: '30px', height: '30px', cursor: 'pointer' }}>✕</button>
+                            <button onClick={() => setSelectedItem(null)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'white', border: 'none', borderRadius: '50%', width: '30px', height: '30px', cursor: 'pointer', fontWeight:'bold' }}>✕</button>
                         </div>
 
                         <div style={{ padding: '2rem' }}>
@@ -215,6 +213,37 @@ const CandidacyPage = () => {
                                 {selectedItem.desc[language]}
                             </p>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal del PDF Completo */}
+            {showPdf && (
+                <div style={{
+                    position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+                    background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(10px)',
+                    display: 'flex', flexDirection: 'column',
+                    zIndex: 2000
+                }}>
+                    <div style={{ 
+                        padding: '1rem 2rem', background: 'var(--scout-purple)', 
+                        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                        color: 'white'
+                    }}>
+                        <h3 style={{ margin: 0, fontSize: '1.1rem' }}>{language === 'es' ? 'Previsualización de Propuesta' : 'Proposal Preview'}</h3>
+                        <div style={{ display: 'flex', gap: '1rem' }}>
+                            <a href={candidacy.proposalPdfUrl} download style={{ background: 'white', color: 'var(--scout-purple)', padding: '0.5rem 1rem', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.8rem' }}>
+                                {language === 'es' ? 'Descargar' : 'Download'}
+                            </a>
+                            <button onClick={() => setShowPdf(false)} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', width: '30px', height: '30px', borderRadius: '50%', cursor: 'pointer', fontWeight: 'bold' }}>✕</button>
+                        </div>
+                    </div>
+                    <div style={{ flex: 1, position: 'relative', background: '#525659' }}>
+                        <iframe 
+                            src={`${candidacy.proposalPdfUrl}#toolbar=0&navpanes=0`} 
+                            style={{ width: '100%', height: '100%', border: 'none' }}
+                            title="PDF Viewer"
+                        />
                     </div>
                 </div>
             )}
