@@ -678,13 +678,13 @@ h4 {
 
 .candidacy-btn-nav {
   text-decoration: none;
-  color: white;
+  color: var(--scout-purple);
   font-weight: 800;
   font-size: 0.9rem;
-  background: var(--scout-purple);
+  background: linear-gradient(90deg, var(--scout-yellow), #ffd600);
   padding: 0.6rem 1.4rem;
   border-radius: 30px;
-  box-shadow: 0 4px 12px rgba(78, 26, 138, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
   transition: all 0.3s ease;
   display: inline-block;
   text-align: center;
