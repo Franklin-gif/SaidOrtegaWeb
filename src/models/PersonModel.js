@@ -263,7 +263,8 @@ const PersonModel = {
             { platform: "Instagram", url: "https://instagram.com/saidisaac._", icon: "📸" },
             { platform: "Email", url: "mailto:saidortega102004@gmail.com", icon: "✉️" }
         ],
-        imagePath: "/hero_profile_media__1772899441601.jpg"
+        imagePath: "/hero_profile_media__1772899441601.jpg",
+        version: "1.2.0" // Increment this whenever you want to force all devices to update
     })
 };
 

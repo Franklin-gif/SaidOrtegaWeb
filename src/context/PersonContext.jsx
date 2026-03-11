@@ -8,27 +8,25 @@ export const PersonProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const initialData = PersonModel.getInitialData();
         const savedData = localStorage.getItem('said_web_data');
+        
         if (savedData) {
             let data = JSON.parse(savedData);
             
-            // Migration for Bio: paragraphs -> paragraph
-            if (data.sections.bio && !data.sections.bio.paragraph) {
-                data.sections.bio.paragraph = data.sections.bio.paragraphs?.length > 0 
-                    ? data.sections.bio.paragraphs[0] 
-                    : { es: '', en: '', pt: '', ar: '' };
+            // Critical Cache Fix: 
+            // If the code version (initialData.version) is higher or different than stored,
+            // we force initialData for everything to ENSURE the user sees the latest hardcoded sync,
+            // but we can try to keep user-specific settings if there were any.
+            if (!data.version || data.version !== initialData.version) {
+                console.log("Forcing update to version:", initialData.version);
+                const forcedSync = { ...initialData };
+                setPerson(forcedSync);
+                localStorage.setItem('said_web_data', JSON.stringify(forcedSync));
+            } else {
+                setPerson(data);
             }
-
-            // Ensure candidacy structure matches new model
-            if (data.sections.candidacy && !data.sections.candidacy.videoUrl) {
-                const initial = PersonModel.getInitialData();
-                data.sections.candidacy.videoUrl = initial.sections.candidacy.videoUrl;
-                data.sections.candidacy.proposalPdfUrl = initial.sections.candidacy.proposalPdfUrl;
-            }
-
-            setPerson(data);
         } else {
-            const initialData = PersonModel.getInitialData();
             initialData.settings = { candidacyEnabled: true };
             setPerson(initialData);
             localStorage.setItem('said_web_data', JSON.stringify(initialData));
