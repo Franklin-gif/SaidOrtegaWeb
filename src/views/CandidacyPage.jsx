@@ -23,7 +23,7 @@ const CandidacyPage = () => {
         <main style={{ minHeight: '100vh', overflowY: 'auto' }}>
             <Navbar navData={person.sections.nav} />
             
-            <section style={{ padding: '10rem 2rem 5rem', background: 'linear-gradient(135deg, var(--scout-purple) 0%, #3d1a78 100%)', color: 'white', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+            <section className="candidacy-hero" style={{ padding: 'clamp(5rem, 15vh, 10rem) 1rem 5rem', background: 'linear-gradient(135deg, var(--scout-purple) 0%, #3d1a78 100%)', color: 'white', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
                 <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at center, rgba(255,255,255,0.05) 0%, transparent 70%)', pointerEvents: 'none' }} />
                 
                 <h1 className="animate-fade-in-up" style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: '900', marginBottom: '0.5rem', color: 'var(--scout-yellow)', textTransform: 'uppercase' }}>
@@ -40,12 +40,12 @@ const CandidacyPage = () => {
                      'اقتراح لتعزيز شبكة الشباب عبر الأمريكتين'}
                 </h2>
 
-                <div className="animate-fade-in-up delay-200" style={{
+                <div className="animate-fade-in-up delay-200 candidacy-summary-box" style={{
                     background: 'rgba(255, 255, 255, 0.08)',
                     backdropFilter: 'blur(10px)',
                     border: '1px solid rgba(255, 255, 255, 0.15)',
                     borderRadius: '20px',
-                    padding: '2rem 2.5rem',
+                    padding: 'clamp(1.5rem, 5vw, 2.5rem)',
                     maxWidth: '850px',
                     margin: '0 auto 2.5rem',
                     boxShadow: '0 15px 35px rgba(0,0,0,0.2)'
@@ -82,7 +82,7 @@ const CandidacyPage = () => {
                 </div>
             </section>
             
-            <section style={{ padding: '6rem 2rem 2rem', background: 'var(--white)', textAlign: 'center' }}>
+            <section style={{ padding: 'clamp(3rem, 10vw, 6rem) 1rem 2rem', background: 'var(--white)', textAlign: 'center' }}>
                 <div className="container" style={{ maxWidth: '900px', margin: '0 auto' }}>
                     <div style={{ borderRadius: '15px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.15)', background: '#000', aspectRatio: '16/9' }}>
                         {candidacy.videoUrl?.startsWith('data:video') ? (

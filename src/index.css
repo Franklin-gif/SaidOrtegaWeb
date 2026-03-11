@@ -194,23 +194,34 @@ h4 {
   padding: 6rem 0;
 }
 
-.section-title {
-  font-size: 2.5rem;
-  margin-bottom: 3rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.section-title i {
-  height: 4px;
-  flex: 1;
-  background: linear-gradient(to right, var(--scout-purple), transparent);
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 2rem;
+    text-align: center;
+    justify-content: center;
+    padding: 0 1rem;
+    position: relative;
+    padding-bottom: 1.5rem;
+  }
+  
+  .section-title i { display: none; }
+  
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: var(--scout-purple);
+    border-radius: 2px;
+  }
 }
 
 .info-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
 }
 
@@ -425,12 +436,13 @@ h4 {
 }
 
 .add-testimonial-box {
-  background-color: var(--bg-light);
-  padding: 2rem;
-  border-radius: var(--radius);
+  background-color: var(--white);
+  padding: 2.5rem;
+  border-radius: 24px;
   max-width: 700px;
   margin: 0 auto;
-  border: 2px dashed var(--scout-blue);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
 .testimonial-form {
@@ -440,14 +452,29 @@ h4 {
 
 .form-groups-inline {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
   align-items: center;
+}
+
+@media (max-width: 768px) {
+  .form-groups-inline {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 .photo-upload-wrapper {
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+@media (max-width: 576px) {
+  .photo-upload-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
 }
 
 .photo-upload-btn {
@@ -499,10 +526,26 @@ h4 {
   background-color: var(--scout-coral);
 }
 
-/* Bio Section */
+/* Bio Section: Profile Style */
 .bio-main {
   max-width: 800px;
   margin: 0 auto;
+  background: var(--white);
+  padding: 3rem;
+  border-radius: 32px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.03);
+  position: relative;
+}
+
+.bio-main::before {
+  content: '“';
+  position: absolute;
+  top: -20px;
+  left: 40px;
+  font-size: 8rem;
+  color: var(--scout-purple);
+  opacity: 0.05;
+  font-family: serif;
 }
 
 .bio-text {
@@ -512,10 +555,32 @@ h4 {
   text-align: justify;
   opacity: 0.9;
   line-height: 1.8;
+  position: relative;
+  z-index: 1;
 }
 
 .bio-text:last-child {
   margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .bio-main {
+    padding: 2rem 1.5rem;
+    border-radius: 24px;
+    margin: 0 0.5rem;
+  }
+  
+  .bio-text {
+    font-size: 1.05rem;
+    text-align: left;
+    line-height: 1.6;
+  }
+
+  .bio-main::before {
+    font-size: 5rem;
+    top: -10px;
+    left: 20px;
+  }
 }
 
 /* Gallery Section */
@@ -614,13 +679,13 @@ h4 {
 
 .candidacy-btn-nav {
   text-decoration: none;
-  color: var(--scout-purple);
+  color: white;
   font-weight: 800;
   font-size: 0.9rem;
-  background: linear-gradient(90deg, var(--scout-yellow), #ffd600);
+  background: var(--scout-purple);
   padding: 0.6rem 1.4rem;
   border-radius: 30px;
-  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+  box-shadow: 0 4px 12px rgba(78, 26, 138, 0.3);
   transition: all 0.3s ease;
   display: inline-block;
   text-align: center;
@@ -841,13 +906,12 @@ h4 {
   }
 
   .section-title {
-    font-size: 2rem;
+    font-size: 1.8rem;
     text-align: center;
     justify-content: center;
     padding: 0 1rem;
+    margin-bottom: 2rem;
   }
-
-  .section-title i { display: none; }
 
   .testimonial-text-content {
     font-size: 1rem;
@@ -877,15 +941,20 @@ h4 {
 
 @media (max-width: 576px) {
   .name-part {
-    font-size: 1.5rem;
-    padding: 0.6rem 1.5rem;
+    font-size: clamp(1.2rem, 8vw, 2rem);
+    padding: 0.5rem 1.2rem;
   }
 
-  .section { padding: 4rem 0; }
+  .section { padding: 3rem 0; }
 
-  .container { padding: 0 1rem; }
+  .container { padding: 0 1.25rem; }
 
-  .info-card { padding: 1.5rem; }
+  .info-card { padding: 1.5rem; margin-bottom: 1rem; }
+  
+  .add-testimonial-box {
+    padding: 1.5rem;
+    border-radius: 20px;
+  }
 
   .hero { padding: 2rem 0; }
 
