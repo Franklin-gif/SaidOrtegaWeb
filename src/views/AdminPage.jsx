@@ -98,8 +98,23 @@ const AdminDashboard = () => {
         setTimeout(() => setShowToast(false), 3000);
     };
 
+    const getAggregatedData = () => {
+        const newData = JSON.parse(JSON.stringify(person));
+        newData.sections.bio.paragraph = { ...localBio };
+        newData.imagePath = localImagePath;
+        newData.sections.experience.items = [...localTrajectory];
+        if (localCandidacy) newData.sections.candidacy = { ...localCandidacy };
+        newData.sections.gallery.images = [...localGallery];
+        return newData;
+    };
+
+    const handleSaveAllGlobal = () => {
+        updatePerson(getAggregatedData());
+        triggerToast("¡Todos los cambios globales han sido guardados!");
+    };
+
     const handleToggleCandidacyMode = () => {
-        const newData = { ...person };
+        const newData = getAggregatedData();
         newData.settings = newData.settings || {};
         newData.settings.candidacyEnabled = !newData.settings.candidacyEnabled;
         updatePerson(newData);
@@ -107,18 +122,13 @@ const AdminDashboard = () => {
     };
 
     const handleSaveBio = () => {
-        const newData = { ...person };
-        newData.sections.bio.paragraph = { ...localBio };
-        newData.imagePath = localImagePath;
-        updatePerson(newData);
-        triggerToast("Información de perfil actualizada");
+        updatePerson(getAggregatedData());
+        triggerToast("Información de perfil actualizada globalmente");
     };
 
     const handleSaveTrajectory = () => {
-        const newData = { ...person };
-        newData.sections.experience.items = [...localTrajectory];
-        updatePerson(newData);
-        triggerToast("Trayectoria guardada correctamente");
+        updatePerson(getAggregatedData());
+        triggerToast("Trayectoria guardada globalmente");
     };
 
     const handleAddTrajectoryItem = () => {
@@ -133,10 +143,8 @@ const AdminDashboard = () => {
     };
 
     const handleSaveCandidacy = () => {
-        const newData = { ...person };
-        newData.sections.candidacy = { ...localCandidacy };
-        updatePerson(newData);
-        triggerToast("Sección de candidatura guardada");
+        updatePerson(getAggregatedData());
+        triggerToast("Sección de candidatura guardada globalmente");
     };
 
     const handleAddCandidacyItem = () => {
@@ -158,10 +166,8 @@ const AdminDashboard = () => {
     };
 
     const handleSaveGallery = () => {
-        const newData = { ...person };
-        newData.sections.gallery.images = [...localGallery];
-        updatePerson(newData);
-        triggerToast("Galería guardada correctamente");
+        updatePerson(getAggregatedData());
+        triggerToast("Galería guardada globalmente");
     };
 
     const handleVideoUpload = async (e) => {
@@ -319,6 +325,12 @@ const AdminDashboard = () => {
                 </nav>
 
                 <div style={{ marginTop: 'auto', padding: '1.5rem', background: '#f8fafc', borderRadius: '16px', border: '1px solid #f1f5f9' }}>
+                    <button 
+                        onClick={handleSaveAllGlobal}
+                        style={{ width: '100%', marginBottom: '10px', background: 'var(--scout-green)', color: 'white', border: 'none', borderRadius: '10px', padding: '0.9rem', fontWeight: '800', cursor: 'pointer', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}
+                    >
+                        💾 Guardar Todo
+                    </button>
                     <button 
                         onClick={() => window.location.href = "/"}
                         style={{ width: '100%', background: 'white', color: '#111', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '0.8rem', fontWeight: '700', cursor: 'pointer' }}
@@ -506,7 +518,7 @@ const AdminDashboard = () => {
                                         <p style={{ margin: 0, fontStyle: 'italic' }}>"{t.text.es}"</p>
                                         <strong style={{ fontSize: '0.9rem' }}>{t.name}</strong>
                                     </div>
-                                    <button onClick={() => { const nl = {...person}; nl.sections.testimonials.list.splice(idx, 1); updatePerson(nl); triggerToast("Eliminado"); }} style={{ padding: '0.5rem 1rem', background: '#fff1f2', color: '#e11d48', border: 'none', borderRadius: '8px' }}>Borrar</button>
+                                    <button onClick={() => { const newData = getAggregatedData(); newData.sections.testimonials.list.splice(idx, 1); updatePerson(newData); triggerToast("Eliminado y guardado"); }} style={{ padding: '0.5rem 1rem', background: '#fff1f2', color: '#e11d48', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>Borrar</button>
                                 </div>
                             ))}
                         </div>
