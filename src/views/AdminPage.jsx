@@ -99,9 +99,7 @@ const AdminDashboard = () => {
     };
 
     const fillTranslations = (text) => ({
-        es: text || "",
-        en: text || "",
-        pt: text || ""
+        es: text || ""
     });
 
     const getAggregatedData = () => {

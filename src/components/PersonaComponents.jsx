@@ -46,17 +46,6 @@ const Navbar = ({ navData }) => {
                         </Link>
                     )}
                     
-                    <select
-                        className="lang-sel"
-                        value={language}
-                        onChange={(e) => setLanguage(e.target.value)}
-                    >
-                        {Object.keys(translations).map(lang => (
-                            <option key={lang} value={lang}>
-                                {translations[lang].flag} {translations[lang].name.substring(0, 2)}
-                            </option>
-                        ))}
-                    </select>
                 </div>
             </div>
         </nav>

@@ -6,8 +6,6 @@ export const LanguageProvider = ({ children }) => {
     const [language, setLanguage] = useState('es'); // Default to Spanish as requested
 
     const translations = {
-        pt: { name: 'Português', flag: '🇧🇷' },
-        en: { name: 'English', flag: '🇺🇸' },
         es: { name: 'Español', flag: '🇪🇸' }
     };
 
