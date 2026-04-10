@@ -8,8 +8,7 @@ export const LanguageProvider = ({ children }) => {
     const translations = {
         pt: { name: 'Português', flag: '🇧🇷' },
         en: { name: 'English', flag: '🇺🇸' },
-        es: { name: 'Español', flag: '🇪🇸' },
-        ar: { name: 'العربية', flag: '🇦🇪' }
+        es: { name: 'Español', flag: '🇪🇸' }
     };
 
     return (

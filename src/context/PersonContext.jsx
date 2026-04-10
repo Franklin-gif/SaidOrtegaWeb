@@ -22,19 +22,10 @@ export const PersonProvider = ({ children }) => {
                     const data = docSnap.data();
                     console.log("Datos recibidos de Firestore:", data.version);
                     
-                    if (data.version !== initialData.version) {
-                        console.log("Sincronizando versiones...");
-                        // Mantenemos settings del usuario pero actualizamos estructura
-                        const syncedData = { ...initialData, settings: data.settings || initialData.settings };
-                        try {
-                            await setDoc(docRef, syncedData);
-                            setPerson(syncedData);
-                        } catch (e) {
-                            console.error("Error sincronizando versión:", e);
-                        }
-                    } else {
-                        setPerson(data);
-                    }
+                    // If versions differ, we keep the Firestore data (user edits) 
+                    // and just update the version locally if needed, but we don't overwrite the cloud data.
+                    setPerson(data);
+
                     setDbStatus('online');
                 } else {
                     console.log("Documento no existe. Creando inicial...");

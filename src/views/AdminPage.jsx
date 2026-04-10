@@ -98,12 +98,39 @@ const AdminDashboard = () => {
         setTimeout(() => setShowToast(false), 3000);
     };
 
+    const fillTranslations = (text) => ({
+        es: text || "",
+        en: text || "",
+        pt: text || ""
+    });
+
     const getAggregatedData = () => {
         const newData = JSON.parse(JSON.stringify(person));
-        newData.sections.bio.paragraph = { ...localBio };
+        
+        // Sync Bio
+        newData.sections.bio.paragraph = fillTranslations(localBio.es);
+        
+        // Profile Image
         newData.imagePath = localImagePath;
-        newData.sections.experience.items = [...localTrajectory];
-        if (localCandidacy) newData.sections.candidacy = { ...localCandidacy };
+        
+        // Sync Trajectory
+        newData.sections.experience.items = localTrajectory.map(item => ({
+            ...item,
+            title: fillTranslations(item.title.es)
+        }));
+        
+        // Sync Candidacy
+        if (localCandidacy) {
+            newData.sections.candidacy = {
+                ...localCandidacy,
+                items: localCandidacy.items.map(item => ({
+                    ...item,
+                    title: fillTranslations(item.title.es),
+                    desc: fillTranslations(item.desc.es)
+                }))
+            };
+        }
+        
         newData.sections.gallery.images = [...localGallery];
         return newData;
     };
