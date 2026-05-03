@@ -719,7 +719,7 @@ h4 {
 /* Admin Dashboard Styles */
 .admin-container {
   min-height: 100vh;
-  background: #f4f5f7;
+  background: #f8fafc;
   display: flex;
   font-family: 'Inter', sans-serif;
   position: relative;
@@ -729,18 +729,57 @@ h4 {
 .admin-sidebar {
   width: 280px;
   background: white;
-  border-right: 1px solid #eaeaea;
+  border-right: none;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.04);
   padding: 2rem 1.5rem;
   display: flex;
   flex-direction: column;
   z-index: 1001;
-  transition: transform 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .admin-main {
   flex: 1;
   padding: 3rem 4rem;
   overflow-y: auto;
+  background: #f8fafc;
+}
+
+/* Inputs and Buttons within Admin */
+.admin-main input,
+.admin-main textarea {
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+  font-size: 1rem !important; /* Prevents zoom on mobile iOS */
+}
+
+.admin-main input:focus,
+.admin-main textarea:focus {
+  border-color: var(--scout-purple) !important;
+  box-shadow: 0 0 0 4px rgba(78, 26, 138, 0.1) !important;
+  background: white !important;
+}
+
+.admin-main button {
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+.admin-main button:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.15) !important;
+  filter: brightness(1.05);
+}
+
+.admin-main button:active {
+  transform: translateY(0) scale(0.98) !important;
+  box-shadow: none !important;
+}
+
+.admin-sidebar button {
+  transition: all 0.3s ease !important;
+}
+
+.admin-sidebar button:hover {
+  transform: translateX(4px);
 }
 
 .admin-mobile-header {
@@ -850,17 +889,31 @@ h4 {
   background: white;
   padding: 2.5rem;
   border-radius: 24px;
-  border: 1px solid #eaeaea;
+  border: 1px solid rgba(0,0,0,0.03);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.admin-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 40px -10px rgba(78, 26, 138, 0.08);
 }
 
 .admin-proposal-item {
   background: white;
   padding: 2rem;
   border-radius: 24px;
-  border: 1px solid #eaeaea;
+  border: 1px solid rgba(0,0,0,0.03);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
   display: flex;
   gap: 2rem;
   flex-wrap: wrap;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.admin-proposal-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 40px -10px rgba(78, 26, 138, 0.08);
 }
 
 .admin-proposal-content {
