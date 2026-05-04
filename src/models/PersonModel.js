@@ -57,7 +57,24 @@ const PersonModel = {
             },
             experience: {
                 title: { es: "Trayectoria" },
-                items: []
+                items: [
+                    { year: "2015", title: { es: "Ingreso al Movimiento Scout" }, org: "Iniciando mi proceso de formación dentro del programa educativo scout." },
+                    { year: "2019", title: { es: "Scout Balboa" }, org: "Obtengo la máxima progresión de la sección media." },
+                    { year: "2022", title: { es: "Condecoración Istmeña" }, org: "Obtengo la máxima progresión de la sección intermedia." },
+                    { year: "2024", title: { es: "Condecoración BP Rover" }, org: "Obtengo la máxima progresión de la sección mayor, culminando el proceso completo de progresión dentro del programa juvenil." },
+                    { year: "2023-2027", title: { es: "Subdirector del organismo de juventud" }, org: "Comité de Arraiján de la Cruz Roja Panameña." },
+                    { year: "2023-2025", title: { es: "Asesor Nacional de Participación Juvenil" }, org: "Foro Nacional de Jóvenes de la Asociación Nacional de Scouts de Panamá." },
+                    { year: "2024", title: { es: "Coordinador Nacional de Sector Escolar" }, org: "Organismo de Juventud de la Cruz Roja Panameña." },
+                    { year: "2024", title: { es: "Subdirector del Grupo Scout 15" }, org: "Juan Demóstenes Arosemena, siendo el miembro más joven en asumir este rol dentro del grupo." },
+                    { year: "2024", title: { es: "Subdirector del Curso de Liderazgo Panameño 2024" }, org: "Asociación Nacional de Scouts de Panamá." },
+                    { year: "2025-2027", title: { es: "Comisionado Nacional de Participación Juvenil" }, org: "Asociación Nacional de Scouts de Panamá." },
+                    { year: "2025", title: { es: "Diplomado en Liderazgo Organizacional" }, org: "Y Habilidades Gerenciales con IA." },
+                    { year: "2026", title: { es: "Director del Curso de Liderazgo Panameño 2026" }, org: "Asociación Nacional de Scouts de Panamá." },
+                    { year: "2024", title: { es: "Reconocimiento Mensajero de la Paz" }, org: "Proyecto “Del Timbo al Tambo”, educación ambiental." },
+                    { year: "2024", title: { es: "Reconocimiento Champions for Nature" }, org: "Proyecto “Woofing Hearts: Corazones que Ladran”, bienestar animal." },
+                    { year: "2025", title: { es: "Interamerican Leadership Training" }, org: "Participante en Santo Domingo, República Dominicana." },
+                    { year: "2025", title: { es: "Messenger of Peace: Driving Youth-Led Change Workshop" }, org: "Participante en Riyadh, Arabia Saudita." }
+                ]
             },
             candidacy: {
                 title: { es: "Candidatura" },
