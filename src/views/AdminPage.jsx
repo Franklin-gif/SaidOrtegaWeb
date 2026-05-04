@@ -67,6 +67,7 @@ const AdminDashboard = () => {
     const [showToast, setShowToast] = useState(false);
     const [toastMsg, setToastMsg] = useState('');
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isSavingGlobal, setIsSavingGlobal] = useState(false);
 
     // Local states for all sections to allow manual save
     const [localBio, setLocalBio] = useState({ es: '', en: '', pt: '', ar: '' });
@@ -136,48 +137,53 @@ const AdminDashboard = () => {
         return newData;
     };
 
+    const executeSave = async (newData, successMsg) => {
+        setIsSavingGlobal(true);
+        try {
+            await updatePerson(newData);
+            triggerToast(successMsg);
+        } catch (error) {
+            triggerToast("❌ Error al guardar en la nube");
+        } finally {
+            setIsSavingGlobal(false);
+        }
+    };
+
     const handleSaveAllGlobal = () => {
-        updatePerson(getAggregatedData());
-        triggerToast("¡Todos los cambios globales han sido guardados!");
+        executeSave(getAggregatedData(), "¡Todos los cambios globales han sido guardados!");
     };
 
     const handleToggleCandidacyMode = () => {
         const newData = getAggregatedData();
         newData.settings = newData.settings || {};
         newData.settings.candidacyEnabled = !newData.settings.candidacyEnabled;
-        updatePerson(newData);
-        triggerToast(`Modo candidatura ${newData.settings.candidacyEnabled ? 'activado' : 'desactivado'}`);
+        executeSave(newData, `Modo candidatura ${newData.settings.candidacyEnabled ? 'activado' : 'desactivado'}`);
     };
 
     const handleSaveBio = () => {
-        updatePerson(getAggregatedData());
-        triggerToast("Información de perfil actualizada globalmente");
+        executeSave(getAggregatedData(), "Información de perfil actualizada globalmente");
     };
 
     const handleSaveTrajectory = () => {
-        updatePerson(getAggregatedData());
-        triggerToast("Trayectoria guardada globalmente");
+        executeSave(getAggregatedData(), "Trayectoria guardada globalmente");
     };
 
     const handleAddTrajectoryItem = () => {
         const newItem = { year: "202X", title: { es: "Nuevo Cargo", en: "New Role", pt: "Novo Cargo", ar: "" }, org: "Descripción aquí" };
         const newList = [newItem, ...localTrajectory];
         setLocalTrajectory(newList);
-        updatePerson(getAggregatedData({ trajectory: newList }));
-        triggerToast("Hito añadido y guardado automáticamente");
+        executeSave(getAggregatedData({ trajectory: newList }), "Hito añadido y guardado automáticamente");
     };
 
     const handleRemoveTrajectoryItem = (idx) => {
         const newList = [...localTrajectory];
         newList.splice(idx, 1);
         setLocalTrajectory(newList);
-        updatePerson(getAggregatedData({ trajectory: newList }));
-        triggerToast("Hito eliminado y guardado automáticamente");
+        executeSave(getAggregatedData({ trajectory: newList }), "Hito eliminado y guardado automáticamente");
     };
 
     const handleSaveCandidacy = () => {
-        updatePerson(getAggregatedData());
-        triggerToast("Sección de candidatura guardada globalmente");
+        executeSave(getAggregatedData(), "Sección de candidatura guardada globalmente");
     };
 
     const handleAddCandidacyItem = () => {
@@ -191,8 +197,7 @@ const AdminDashboard = () => {
             items: [...localCandidacy.items, newItem]
         };
         setLocalCandidacy(newList);
-        updatePerson(getAggregatedData({ candidacy: newList }));
-        triggerToast("Propuesta añadida y guardada automáticamente");
+        executeSave(getAggregatedData({ candidacy: newList }), "Propuesta añadida y guardada automáticamente");
     };
 
     const handleRemoveCandidacyItem = (idx) => {
@@ -200,13 +205,11 @@ const AdminDashboard = () => {
         newItems.splice(idx, 1);
         const newList = { ...localCandidacy, items: newItems };
         setLocalCandidacy(newList);
-        updatePerson(getAggregatedData({ candidacy: newList }));
-        triggerToast("Propuesta eliminada y guardada automáticamente");
+        executeSave(getAggregatedData({ candidacy: newList }), "Propuesta eliminada y guardada automáticamente");
     };
 
     const handleSaveGallery = () => {
-        updatePerson(getAggregatedData());
-        triggerToast("Galería guardada globalmente");
+        executeSave(getAggregatedData(), "Galería guardada globalmente");
     };
 
     const handleVideoUpload = async (e) => {
@@ -217,8 +220,7 @@ const AdminDashboard = () => {
                 const url = await uploadToCloudinary(file, "video");
                 const newCandidacy = {...localCandidacy, videoUrl: url};
                 setLocalCandidacy(newCandidacy);
-                updatePerson(getAggregatedData({ candidacy: newCandidacy }));
-                triggerToast("Video subido y guardado");
+                executeSave(getAggregatedData({ candidacy: newCandidacy }), "Video subido y guardado");
             } catch (err) {
                 triggerToast("Error al subir video");
             } finally {
@@ -237,8 +239,7 @@ const AdminDashboard = () => {
                 const url = await uploadToCloudinary(file);
                 const newList = [url, ...localGallery];
                 setLocalGallery(newList);
-                updatePerson(getAggregatedData({ gallery: newList }));
-                triggerToast("Imagen lista y guardada");
+                executeSave(getAggregatedData({ gallery: newList }), "Imagen lista y guardada");
             } catch (err) {
                 triggerToast("Error al subir imagen");
             } finally {
@@ -257,8 +258,7 @@ const AdminDashboard = () => {
                 newItems[idx].image = url;
                 const newCandidacy = { ...localCandidacy, items: newItems };
                 setLocalCandidacy(newCandidacy);
-                updatePerson(getAggregatedData({ candidacy: newCandidacy }));
-                triggerToast("Imagen de propuesta lista y guardada");
+                executeSave(getAggregatedData({ candidacy: newCandidacy }), "Imagen de propuesta lista y guardada");
             } catch (err) {
                 triggerToast("Error al subir imagen");
             } finally {
@@ -274,8 +274,7 @@ const AdminDashboard = () => {
             try {
                 const url = await uploadToCloudinary(file);
                 setLocalImagePath(url);
-                updatePerson(getAggregatedData({ imagePath: url }));
-                triggerToast("Nueva foto lista y guardada");
+                executeSave(getAggregatedData({ imagePath: url }), "Nueva foto lista y guardada");
             } catch (err) {
                 triggerToast("Error al subir foto");
             } finally {
@@ -386,11 +385,12 @@ const AdminDashboard = () => {
                                 <p style={{ margin: 0, color: 'var(--scout-purple)', fontWeight: '800', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Said Ortega</p>
                                 <div style={{ 
                                     padding: '2px 8px', borderRadius: '20px', fontSize: '0.65rem', fontWeight: '900',
-                                    background: dbStatus === 'online' ? '#dcfce7' : dbStatus === 'error' ? '#fee2e2' : '#fef9c3',
-                                    color: dbStatus === 'online' ? '#166534' : dbStatus === 'error' ? '#991b1b' : '#854d0e',
-                                    border: '1px solid currentColor'
+                                    background: isSavingGlobal ? '#dbeafe' : dbStatus === 'online' ? '#dcfce7' : dbStatus === 'error' ? '#fee2e2' : '#fef9c3',
+                                    color: isSavingGlobal ? '#1e40af' : dbStatus === 'online' ? '#166534' : dbStatus === 'error' ? '#991b1b' : '#854d0e',
+                                    border: '1px solid currentColor',
+                                    transition: 'all 0.3s ease'
                                 }}>
-                                    ● {dbStatus === 'online' ? 'SINCRONIZADO' : `CLOUD ${dbStatus.toUpperCase()}`}
+                                    {isSavingGlobal ? '⏳ GUARDANDO...' : `● ${dbStatus === 'online' ? 'SINCRONIZADO' : `CLOUD ${dbStatus.toUpperCase()}`}`}
                                 </div>
                             </div>
                             <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: '900', margin: '0', color: '#111', fontFamily: 'Outfit, sans-serif' }}>
@@ -554,7 +554,7 @@ const AdminDashboard = () => {
                                         <p style={{ margin: 0, fontStyle: 'italic' }}>"{t.text.es}"</p>
                                         <strong style={{ fontSize: '0.9rem' }}>{t.name}</strong>
                                     </div>
-                                    <button onClick={() => { const newData = getAggregatedData(); newData.sections.testimonials.list.splice(idx, 1); updatePerson(newData); triggerToast("Eliminado y guardado"); }} style={{ padding: '0.5rem 1rem', background: '#fff1f2', color: '#e11d48', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>Borrar</button>
+                                    <button onClick={() => { const newData = getAggregatedData(); newData.sections.testimonials.list.splice(idx, 1); executeSave(newData, "Eliminado y guardado"); }} style={{ padding: '0.5rem 1rem', background: '#fff1f2', color: '#e11d48', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>Borrar</button>
                                 </div>
                             ))}
                         </div>
@@ -581,8 +581,7 @@ const AdminDashboard = () => {
                                             const nl = [...localGallery]; 
                                             nl.splice(idx, 1); 
                                             setLocalGallery(nl); 
-                                            updatePerson(getAggregatedData({ gallery: nl }));
-                                            triggerToast("Eliminado y guardado automáticamente");
+                                            executeSave(getAggregatedData({ gallery: nl }), "Eliminado y guardado automáticamente");
                                         }} style={{ position: 'absolute', top: '10px', right: '10px', background: 'white', border: 'none', width: '30px', height: '30px', borderRadius: '50%', color: '#e11d48', cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.2)' }}>✕</button>
                                     </div>
                                 ))}
