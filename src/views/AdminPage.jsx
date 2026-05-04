@@ -76,13 +76,14 @@ const AdminDashboard = () => {
     const [localGallery, setLocalGallery] = useState([]);
     const [localImagePath, setLocalImagePath] = useState('');
     
-    // Upload loading states
     const [isUploading, setIsUploading] = useState({
         gallery: false,
         video: false,
         profile: false,
         candidacy: {} // record of indices
     });
+
+    const [newItemForm, setNewItemForm] = useState({ year: '', title: '', org: '' });
 
     useEffect(() => {
         if (person) {
@@ -175,10 +176,29 @@ const AdminDashboard = () => {
     };
 
     const handleAddTrajectoryItem = () => {
-        const newItem = { year: "202X", title: { es: "Nuevo Cargo", en: "New Role", pt: "Novo Cargo", ar: "" }, org: "Descripción aquí" };
+        if (!newItemForm.year || !newItemForm.title) {
+            triggerToast("⚠️ Completa al menos el Año y el Título");
+            return;
+        }
+
+        const newItem = { 
+            year: newItemForm.year, 
+            title: { es: newItemForm.title, en: newItemForm.title, pt: newItemForm.title, ar: "" }, 
+            org: newItemForm.org 
+        };
+        
         const newList = [newItem, ...localTrajectory];
-        setLocalTrajectory(newList);
-        executeSave(getAggregatedData({ trajectory: newList }), "Hito añadido y guardado automáticamente");
+        
+        // Use the same sort logic as getAggregatedData to keep UI consistent
+        const sortedList = [...newList].sort((a, b) => {
+            const yearA = parseInt(String(a.year).substring(0, 4)) || 0;
+            const yearB = parseInt(String(b.year).substring(0, 4)) || 0;
+            return yearB - yearA; 
+        });
+
+        setLocalTrajectory(sortedList);
+        setNewItemForm({ year: '', title: '', org: '' }); // Reset form
+        executeSave(getAggregatedData({ trajectory: sortedList }), "Hito añadido y ordenado correctamente");
     };
 
     const handleRemoveTrajectoryItem = (idx) => {
@@ -511,19 +531,94 @@ const AdminDashboard = () => {
                     {/* ===== TRAYECTORIA ===== */}
                     {activeTab === 'trayectoria' && (
                         <div className="animate-fade-in-up">
-                            <div style={{ marginBottom: '2rem', display: 'flex', gap: '1rem' }}>
-                                <button onClick={handleAddTrajectoryItem} style={{ padding: '1rem 1.5rem', background: 'var(--scout-purple)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}>+ Añadir Hito</button>
-                                <button onClick={handleSaveTrajectory} style={{ padding: '1rem 1.5rem', background: 'var(--scout-green)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}>💾 Guardar Cambios</button>
+                            
+                            {/* Formulario de Nuevo Hito */}
+                            <div className="admin-card" style={{ marginBottom: '3rem', border: '2px solid var(--scout-purple)', background: '#f5f3ff' }}>
+                                <h3 style={{ margin: '0 0 1.5rem', color: 'var(--scout-purple)', fontSize: '1.1rem', fontWeight: '800' }}>+ AÑADIR NUEVO HITO A LA TRAYECTORIA</h3>
+                                <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 1fr auto', gap: '1rem', alignItems: 'flex-end', flexWrap: 'wrap' }}>
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: '800', color: '#6b7280', marginBottom: '0.5rem' }}>AÑO</label>
+                                        <input 
+                                            placeholder="2024" 
+                                            value={newItemForm.year}
+                                            onChange={e => setNewItemForm({...newItemForm, year: e.target.value})}
+                                            style={{ width: '100%', padding: '0.8rem', borderRadius: '10px', border: '1px solid #ddd', fontWeight: 'bold', textAlign: 'center' }} 
+                                        />
+                                    </div>
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: '800', color: '#6b7280', marginBottom: '0.5rem' }}>TÍTULO / CARGO</label>
+                                        <input 
+                                            placeholder="Ej: Comisionado Nacional" 
+                                            value={newItemForm.title}
+                                            onChange={e => setNewItemForm({...newItemForm, title: e.target.value})}
+                                            style={{ width: '100%', padding: '0.8rem', borderRadius: '10px', border: '1px solid #ddd' }} 
+                                        />
+                                    </div>
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: '800', color: '#6b7280', marginBottom: '0.5rem' }}>ORGANIZACIÓN / DETALLE</label>
+                                        <input 
+                                            placeholder="Asociación de Scouts..." 
+                                            value={newItemForm.org}
+                                            onChange={e => setNewItemForm({...newItemForm, org: e.target.value})}
+                                            style={{ width: '100%', padding: '0.8rem', borderRadius: '10px', border: '1px solid #ddd' }} 
+                                        />
+                                    </div>
+                                    <button 
+                                        onClick={handleAddTrajectoryItem}
+                                        style={{ padding: '0.8rem 1.5rem', background: 'var(--scout-purple)', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer', height: '46px' }}
+                                    >
+                                        Añadir
+                                    </button>
+                                </div>
                             </div>
+
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                                <h3 style={{ margin: 0, fontSize: '0.9rem', color: '#64748b', fontWeight: '800' }}>HISTORIAL REGISTRADO ({localTrajectory.length})</h3>
+                                <button onClick={handleSaveTrajectory} style={{ padding: '0.6rem 1.2rem', background: 'var(--scout-green)', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer', fontSize: '0.8rem' }}>💾 Guardar Todos los Cambios</button>
+                            </div>
+
                             <div style={{ display: 'grid', gap: '1rem' }}>
                                 {localTrajectory.map((item, idx) => (
-                                    <div key={idx} className="admin-card" style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', marginBottom: '1rem', alignItems: 'center' }}>
-                                        <input value={item.year} onChange={e => { const nl = [...localTrajectory]; nl[idx].year = e.target.value; setLocalTrajectory(nl); }} style={{ width: '80px', padding: '0.8rem', borderRadius: '10px', border: '2px solid #f1f5f9', fontWeight: 'bold', textAlign: 'center' }} />
-                                        <div style={{ flex: 1, minWidth: '200px' }}>
-                                            <input value={item.title.es} onChange={e => { const nl = [...localTrajectory]; nl[idx].title.es = e.target.value; setLocalTrajectory(nl); }} style={{ width: '100%', padding: '0.8rem', borderRadius: '10px', border: '2px solid #f1f5f9', marginBottom: '0.5rem', fontWeight: 'bold' }} />
-                                            <input value={item.org} onChange={e => { const nl = [...localTrajectory]; nl[idx].org = e.target.value; setLocalTrajectory(nl); }} style={{ width: '100%', padding: '0.8rem', borderRadius: '10px', border: '2px solid #f1f5f9', color: '#64748b' }} />
+                                    <div key={idx} className="admin-card animate-fade-in-up" style={{ 
+                                        display: 'flex', gap: '1.5rem', alignItems: 'center', 
+                                        padding: '1.2rem 1.5rem', border: '1px solid #f1f5f9',
+                                        transition: 'all 0.2s ease',
+                                        animationDelay: `${idx * 50}ms`
+                                    }}>
+                                        <div style={{ 
+                                            width: '80px', height: '45px', background: '#f8fafc', 
+                                            borderRadius: '8px', display: 'grid', placeItems: 'center',
+                                            border: '1px solid #e2e8f0'
+                                        }}>
+                                            <input 
+                                                value={item.year} 
+                                                onChange={e => { const nl = [...localTrajectory]; nl[idx].year = e.target.value; setLocalTrajectory(nl); }} 
+                                                style={{ width: '100%', background: 'transparent', border: 'none', fontWeight: '900', textAlign: 'center', color: 'var(--scout-purple)', fontSize: '0.9rem', outline: 'none' }} 
+                                            />
                                         </div>
-                                        <button onClick={() => handleRemoveTrajectoryItem(idx)} style={{ background: '#fff1f2', color: '#e11d48', border: 'none', borderRadius: '10px', width: '45px', height: '45px', cursor: 'pointer', marginLeft: 'auto' }}>✕</button>
+                                        <div style={{ flex: 1 }}>
+                                            <input 
+                                                value={item.title.es} 
+                                                onChange={e => { const nl = [...localTrajectory]; nl[idx].title.es = e.target.value; setLocalTrajectory(nl); }} 
+                                                style={{ width: '100%', padding: '0.4rem 0', background: 'transparent', border: 'none', borderBottom: '1px solid transparent', marginBottom: '0.2rem', fontWeight: '700', fontSize: '1rem', outline: 'none', transition: 'border-color 0.2s' }}
+                                                onFocus={e => e.target.style.borderBottomColor = 'var(--scout-purple)'}
+                                                onBlur={e => e.target.style.borderBottomColor = 'transparent'}
+                                            />
+                                            <input 
+                                                value={item.org} 
+                                                onChange={e => { const nl = [...localTrajectory]; nl[idx].org = e.target.value; setLocalTrajectory(nl); }} 
+                                                style={{ width: '100%', background: 'transparent', border: 'none', color: '#64748b', fontSize: '0.85rem', outline: 'none' }} 
+                                            />
+                                        </div>
+                                        <button 
+                                            onClick={() => handleRemoveTrajectoryItem(idx)} 
+                                            style={{ 
+                                                background: '#fee2e2', color: '#ef4444', border: 'none', 
+                                                borderRadius: '8px', width: '32px', height: '32px', 
+                                                cursor: 'pointer', display: 'grid', placeItems: 'center',
+                                                fontSize: '0.8rem', fontWeight: 'bold'
+                                            }}
+                                        >✕</button>
                                     </div>
                                 ))}
                             </div>
