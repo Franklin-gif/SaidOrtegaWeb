@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { usePerson } from '../context/PersonContext';
 import { uploadToCloudinary } from '../utils/cloudinary';
-import { storage } from '../firebase';
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const AdminPage = () => {
     const { person, updatePerson } = usePerson();
@@ -79,6 +77,7 @@ const AdminDashboard = () => {
     const [isUploading, setIsUploading] = useState({
         gallery: false,
         video: false,
+        pdf: false,
         profile: false,
         candidacy: {} // record of indices
     });
@@ -212,7 +211,21 @@ const AdminDashboard = () => {
         }
     };
 
-
+    const handlePdfUpload = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setIsUploading({...isUploading, pdf: true});
+            try {
+                const url = await uploadToCloudinary(file, "auto"); // PDF as raw/auto
+                setLocalCandidacy({...localCandidacy, proposalPdfUrl: url});
+                triggerToast("PDF subido a Cloudinary");
+            } catch (err) {
+                triggerToast("Error al subir PDF");
+            } finally {
+                setIsUploading({...isUploading, pdf: false});
+            }
+        }
+    };
 
     const handleGalleryUpload = async (e) => {
         const file = e.target.files[0];
@@ -475,27 +488,23 @@ const AdminDashboard = () => {
                                     <h3 style={{ margin: 0 }}>Ajustes de Sección</h3>
                                     <button onClick={handleSaveCandidacy} style={{ padding: '0.8rem 1.5rem', background: 'var(--scout-green)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}>Guardar Todo</button>
                                 </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
-                                    
-                                    {/* Video Upload Box */}
-                                    <div style={{ background: '#f8fafc', border: '2px dashed #cbd5e1', borderRadius: '16px', padding: '1.5rem', textAlign: 'center', transition: 'all 0.3s', position: 'relative' }} onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--scout-purple)'} onMouseLeave={e => e.currentTarget.style.borderColor = '#cbd5e1'}>
-                                        <input type="file" id="videoUpload" accept="video/*" onChange={handleVideoUpload} style={{ display: 'none' }} />
-                                        <label htmlFor="videoUpload" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-                                            <span style={{ fontSize: '2.5rem' }}>🎬</span>
-                                            <span style={{ fontWeight: '800', color: 'var(--scout-purple)', fontSize: '0.9rem' }}>Video de Campaña</span>
-                                            <span style={{ fontSize: '0.75rem', color: '#64748b' }}>{isUploading.video ? 'Subiendo...' : 'Haz clic para subir (MP4)'}</span>
-                                        </label>
-                                        
-                                        {localCandidacy.videoUrl && !isUploading.video && (
-                                            <div style={{ marginTop: '1rem', background: '#dcfce7', padding: '0.5rem', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                                                <span style={{ color: '#166534', fontWeight: 'bold', fontSize: '0.8rem' }}>✓ Video Listo</span>
-                                                <a href={localCandidacy.videoUrl} target="_blank" rel="noopener noreferrer" style={{ background: 'white', color: '#166534', padding: '0.2rem 0.5rem', borderRadius: '5px', fontSize: '0.7rem', textDecoration: 'none', fontWeight: 'bold', border: '1px solid #166534' }}>👀 Ver</a>
-                                            </div>
-                                        )}
+                                <div className="admin-grid-2">
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Video de Campaña</label>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                            <input type="file" accept="video/*" onChange={handleVideoUpload} style={{ fontSize: '0.8rem', width: '100%' }} />
+                                            {isUploading.video && <p style={{ fontSize: '0.7rem', color: 'var(--scout-purple)', margin: 0 }}>Subiendo video...</p>}
+                                            {localCandidacy.videoUrl && <p style={{ fontSize: '0.7rem', color: 'var(--scout-green)', margin: 0 }}>✓ Archivo listo</p>}
+                                        </div>
                                     </div>
-
-
-
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Documento PDF (Propuesta)</label>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                            <input type="file" accept="application/pdf" onChange={handlePdfUpload} style={{ fontSize: '0.8rem', width: '100%' }} />
+                                            {isUploading.pdf && <p style={{ fontSize: '0.7rem', color: 'var(--scout-purple)', margin: 0 }}>Subiendo PDF...</p>}
+                                            {localCandidacy.proposalPdfUrl && <p style={{ fontSize: '0.7rem', color: 'var(--scout-green)', margin: 0 }}>✓ Archivo listo</p>}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
