@@ -18,8 +18,9 @@ export const PersonProvider = ({ children }) => {
 
         const unsubscribe = onSnapshot(docRef, 
             async (docSnap) => {
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
+                const data = docSnap.exists() ? docSnap.data() : null;
+                
+                if (docSnap.exists() && data && data.sections) {
                     console.log("Datos recibidos de Firestore:", data.version);
                     
                     // If versions differ, we keep the Firestore data (user edits) 
@@ -28,7 +29,7 @@ export const PersonProvider = ({ children }) => {
 
                     setDbStatus('online');
                 } else {
-                    console.log("Documento no existe. Creando inicial...");
+                    console.log("Documento vacío o no existe. Restaurando estructura inicial...");
                     try {
                         const dataToSave = { ...initialData, settings: { candidacyEnabled: true } };
                         await setDoc(docRef, dataToSave);
