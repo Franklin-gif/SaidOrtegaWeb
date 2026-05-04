@@ -37,7 +37,7 @@ const PersonModel = {
             bio: {
                 title: { es: "¿Quién es Said?" },
                 paragraph: {
-                    es: "Soy Said Ortega, líder Scout de Panamá y actual Comisionado Nacional de Participación Juvenil de la Asociación Nacional de Scouts de Panamá. Mi historia en el Movimiento Escoteiro comenzó hace más de nueve años, cuando entré como un joven con ganas de aprender, vivir aventuras y descubrir de qué era capaz. Hoy sirvo con propósito comprometido con el cambio social."
+                    es: ""
                 }
             },
             contact: {
@@ -57,84 +57,30 @@ const PersonModel = {
             },
             experience: {
                 title: { es: "Trayectoria" },
-                items: [
-                    {
-                        year: "2026",
-                        title: { es: "Director del Curso de Liderazgo Panameño 2026" },
-                        org: "Asociación Nacional de Scouts de Panamá."
-                    },
-                    {
-                        year: "2025",
-                        title: { es: "Comisionado Nacional de Participación Juvenil" },
-                        org: "Dirección Nacional de la Asociación Nacional de Scouts de Panamá."
-                    },
-                    {
-                        year: "2025",
-                        title: { es: "Interamerican Leadership Training" },
-                        org: "Boy Scouts of America (Sede Medellín, Colombia)."
-                    },
-                    {
-                        year: "2024",
-                        title: { es: "Delegado Nacional JAV" },
-                        org: "Conferencia Scout Mundial, El Cairo, Egipto."
-                    },
-                    {
-                        year: "2024",
-                        title: { es: "Condecoración BP Rover" },
-                        org: "Máxima progresión de la sección mayor."
-                    }
-                ]
+                items: []
             },
             candidacy: {
                 title: { es: "Candidatura" },
-                videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+                videoUrl: "",
                 proposalPdfUrlEs: "/propuesta_said_es.pdf",
                 proposalPdfUrlEn: "/propuesta_said_en.pdf",
-                items: [
-                    {
-                        title: { es: "Innovación Educativa" },
-                        desc: { 
-                            es: "Actualizar los métodos de participación para la era digital fomentando un aprendizaje dinámico."
-                        },
-                        image: "/idea.png"
-                    },
-                    {
-                        title: { es: "Liderazgo de Impacto" },
-                        desc: { 
-                            es: "Empoderar a los jóvenes en la toma de decisiones para que sean motores de cambio positivo."
-                        },
-                        image: "/gallery_media__1772898432218.jpg"
-                    }
-                ]
+                items: []
             },
             testimonials: {
                 title: { es: "Lo que dicen sobre Said" },
-                list: [
-                    {
-                        name: "Franklin Bernal",
-                        text: {
-                            es: "Said es un líder excepcional. Su compromiso con el empoderamiento juvenil y el escultismo ha transformado nuestra comunidad."
-                        },
-                        photo: "/hero_profile_media__1772899441601.jpg"
-                    }
-                ]
+                list: []
             },
             gallery: {
                 title: { es: "Galería" },
-                images: [
-                    "/gallery_media__1772898300083.jpg",
-                    "/gallery_media__1772898367726.jpg",
-                    "/gallery_media__1772898432218.jpg",
-                    "/gallery_media__1772898486269.jpg"
-                ]
+                images: []
             }
         },
         socialLinks: [
             { platform: "Instagram", url: "https://instagram.com/saidisaac._", icon: "📸" },
             { platform: "Email", url: "mailto:saidortega102004@gmail.com", icon: "✉️" }
         ],
-        imagePath: "/hero_profile_media__1772899441601.jpg",
-        version: "1.4.0"
+        imagePath: "",
+        version: "1.5.0"
     })
 };
 
