@@ -93,8 +93,7 @@ const PersonModel = {
             }
         },
         socialLinks: [
-            { platform: "Instagram", url: "https://instagram.com/saidisaac._", icon: "📸" },
-            { platform: "Email", url: "mailto:saidortega102004@gmail.com", icon: "✉️" }
+            { platform: "Instagram", url: "https://instagram.com/saidisaac._", icon: "📸" }
         ],
         imagePath: "",
         version: "1.5.0"
