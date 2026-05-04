@@ -113,9 +113,15 @@ const AdminDashboard = () => {
         // Profile Image
         newData.imagePath = overrides.imagePath ?? localImagePath;
         
-        // Sync Trajectory
+        // Sync Trajectory (Auto-sorted by year descending)
         const trajToUse = overrides.trajectory || localTrajectory;
-        newData.sections.experience.items = trajToUse.map(item => ({
+        const sortedTraj = [...trajToUse].sort((a, b) => {
+            const yearA = parseInt(String(a.year).substring(0, 4)) || 0;
+            const yearB = parseInt(String(b.year).substring(0, 4)) || 0;
+            return yearB - yearA; 
+        });
+
+        newData.sections.experience.items = sortedTraj.map(item => ({
             ...item,
             title: fillTranslations(item.title.es)
         }));
