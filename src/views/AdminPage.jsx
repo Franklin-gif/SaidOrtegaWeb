@@ -425,12 +425,52 @@ const AdminDashboard = () => {
                                     <h3 style={{ margin: 0, fontWeight: '800' }}>Modo Candidatura</h3>
                                     <p style={{ margin: '0.5rem 0 0', color: '#64748b' }}>Muestra u oculta la sección de propuestas en el sitio web.</p>
                                 </div>
-                                <button 
+                                <div 
                                     onClick={handleToggleCandidacyMode}
-                                    style={{ padding: '0.8rem 1.5rem', borderRadius: '12px', border: 'none', background: person.settings?.candidacyEnabled ? 'var(--scout-green)' : '#cbd5e1', color: 'white', fontWeight: 'bold', cursor: 'pointer' }}
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '15px',
+                                        cursor: 'pointer',
+                                        background: person.settings?.candidacyEnabled ? '#dcfce7' : '#f1f5f9',
+                                        padding: '0.5rem 1rem',
+                                        borderRadius: '50px',
+                                        border: '1px solid',
+                                        borderColor: person.settings?.candidacyEnabled ? '#86efac' : '#cbd5e1',
+                                        transition: 'all 0.3s ease'
+                                    }}
                                 >
-                                    {person.settings?.candidacyEnabled ? 'ACTIVADO' : 'DESACTIVADO'}
-                                </button>
+                                    <span style={{ 
+                                        fontWeight: '800', 
+                                        fontSize: '0.85rem',
+                                        color: person.settings?.candidacyEnabled ? '#166534' : '#64748b',
+                                        letterSpacing: '0.5px'
+                                    }}>
+                                        {person.settings?.candidacyEnabled ? 'ACTIVO (PÚBLICO)' : 'INACTIVO (OCULTO)'}
+                                    </span>
+                                    <div style={{
+                                        width: '54px',
+                                        height: '30px',
+                                        background: person.settings?.candidacyEnabled ? 'var(--scout-green)' : '#cbd5e1',
+                                        borderRadius: '30px',
+                                        position: 'relative',
+                                        transition: 'background 0.3s ease',
+                                        boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.1)',
+                                        flexShrink: 0
+                                    }}>
+                                        <div style={{
+                                            width: '22px',
+                                            height: '22px',
+                                            background: 'white',
+                                            borderRadius: '50%',
+                                            position: 'absolute',
+                                            top: '4px',
+                                            left: person.settings?.candidacyEnabled ? '28px' : '4px',
+                                            transition: 'left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                                            boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
+                                        }} />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     )}
