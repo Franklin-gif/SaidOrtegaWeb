@@ -260,6 +260,15 @@ const AdminDashboard = () => {
     const handleGalleryUpload = async (e) => {
         const file = e.target.files[0];
         if (file) {
+            if (!file.type.startsWith('image/')) {
+                triggerToast("⚠️ Por favor selecciona una imagen válida");
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                triggerToast("⚠️ Imagen demasiado pesada (máx 5MB)");
+                return;
+            }
+
             setIsUploading({...isUploading, gallery: true});
             try {
                 const url = await uploadToCloudinary(file);
@@ -277,6 +286,15 @@ const AdminDashboard = () => {
     const handleUpdateCandidacyImage = async (idx, e) => {
         const file = e.target.files[0];
         if (file) {
+            if (!file.type.startsWith('image/')) {
+                triggerToast("⚠️ Selecciona una imagen válida");
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                triggerToast("⚠️ Imagen muy pesada (máx 5MB)");
+                return;
+            }
+
             setIsUploading({...isUploading, candidacy: {...isUploading.candidacy, [idx]: true}});
             try {
                 const url = await uploadToCloudinary(file);

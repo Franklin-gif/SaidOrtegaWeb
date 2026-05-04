@@ -190,28 +190,45 @@ const TestimonialsSection = ({ testData }) => {
     const [photoWithSaidUrl, setPhotoWithSaidUrl] = React.useState('');
     const [isUploading, setIsUploading] = React.useState(false);
     const [isUploadingWithSaid, setIsUploadingWithSaid] = React.useState(false);
+    const [isSubmitting, setIsSubmitting] = React.useState(false);
 
     const i18n = {
-        es: { addBtn: "Publicar", namePh: "Tu Nombre / Organización", textPh: "¿Cómo ha sido tu experiencia trabajando con Said?", photoBtn: "Tu Foto", photoWithSaidBtn: "Foto con Said (Opcional)", formTitle: "¡Suma tu Voz!", uploading: "Subiendo..." },
-        en: { addBtn: "Publish", namePh: "Your Name / Organization", textPh: "How has your experience working with Said been?", photoBtn: "Your Photo", photoWithSaidBtn: "Photo with Said (Optional)", formTitle: "Add your voice!", uploading: "Uploading..." },
-        pt: { addBtn: "Publicar", namePh: "Seu Nome / Organização", textPh: "Como foi sua experiência de trabalho com Said?", photoBtn: "Sua Foto", photoWithSaidBtn: "Foto com Said (Opcional)", formTitle: "Adicione sua voz!", uploading: "Enviando..." },
-        ar: { addBtn: "نشر", namePh: "اسمك / منظمتك", textPh: "كيف كانت تجربتك في العمل مع سعيد؟", photoBtn: "صورتك الشخصية", photoWithSaidBtn: "صورة مع سعيد (اختياري)", formTitle: "أضف صوتك!", uploading: "جاري الرفع..." }
+        es: { addBtn: "Publicar", publishing: "Publicando...", namePh: "Tu Nombre / Organización", textPh: "¿Cómo ha sido tu experiencia trabajando con Said?", photoBtn: "Tu Foto", photoWithSaidBtn: "Foto con Said (Opcional)", formTitle: "¡Suma tu Voz!", uploading: "Subiendo...", success: "¡Gracias! Tu comentario ha sido publicado.", error: "❌ No se pudo publicar. Revisa tu conexión." },
+        en: { addBtn: "Publish", publishing: "Publishing...", namePh: "Your Name / Organization", textPh: "How has your experience working with Said been?", photoBtn: "Your Photo", photoWithSaidBtn: "Photo with Said (Optional)", formTitle: "Add your voice!", uploading: "Uploading...", success: "Thank you! Your comment has been published.", error: "❌ Failed to publish. Please check your connection." },
+        pt: { addBtn: "Publicar", publishing: "Publicando...", namePh: "Seu Nome / Organização", textPh: "Como foi sua experiência de trabalho com Said?", photoBtn: "Sua Foto", photoWithSaidBtn: "Foto com Said (Opcional)", formTitle: "Adicione sua voz!", uploading: "Enviando...", success: "Obrigado! Seu comentário foi publicado.", error: "❌ Não foi possível publicar. Verifique sua conexão." },
+        ar: { addBtn: "نشر", publishing: "جاري النشر...", namePh: "اسمك / منظمتك", textPh: "كيف كانت تجربتك في العمل مع سعيد؟", photoBtn: "صورتك الشخصية", photoWithSaidBtn: "صورة مع سعيد (اختياري)", formTitle: "أضف صوتك!", uploading: "جاري الرفع...", success: "شكراً لك! تم نشر تعليقك.", error: "❌ فشل النشر. يرجى التحقق من اتصالك." }
     };
 
     const handlePhotoUpload = async (e, type) => {
         const file = e.target.files[0];
         if (!file) return;
 
+        // Validaciones básicas
+        if (!file.type.startsWith('image/')) {
+            alert(language === 'es' ? "Por favor selecciona un archivo de imagen válido." : "Please select a valid image file.");
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) { // 5MB limit
+            alert(language === 'es' ? "La imagen es demasiado pesada (máximo 5MB)." : "Image is too large (max 5MB).");
+            return;
+        }
+
         if (type === 'avatar') setIsUploading(true);
         else setIsUploadingWithSaid(true);
 
         try {
+            console.log(`Subiendo ${type} a Cloudinary...`);
             const url = await uploadToCloudinary(file);
             if (type === 'avatar') setPhotoUrl(url);
             else setPhotoWithSaidUrl(url);
+            console.log(`${type} subida con éxito:`, url);
         } catch (error) {
             console.error("Error uploading image:", error);
-            alert("No se pudo subir la imagen. Intenta de nuevo.");
+            const msg = language === 'es' 
+                ? "No se pudo subir la imagen. Verifica que el formato sea correcto o intenta con una imagen más pequeña." 
+                : "Failed to upload image. Check the format or try a smaller image.";
+            alert(msg);
         } finally {
             if (type === 'avatar') setIsUploading(false);
             else setIsUploadingWithSaid(false);
@@ -222,30 +239,40 @@ const TestimonialsSection = ({ testData }) => {
         return str.length;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!name || !text) return;
+        if (!name || !text || isSubmitting) return;
 
         if (getCharCount(text) > 300) {
-            alert(language === 'es' ? "El testimonio no puede exceder los 300 caracteres para mantener la uniformidad." : "Testimonial cannot exceed 300 characters for uniformity.");
+            alert(language === 'es' ? "El testimonio no puede exceder los 300 caracteres." : "Testimonial cannot exceed 300 characters.");
             return;
         }
 
-        const newTestimonial = {
-            name,
-            text: { es: text, en: text, pt: text, ar: text },
-            photo: photoUrl,
-            photoWithSaid: photoWithSaidUrl
-        };
+        setIsSubmitting(true);
+        try {
+            const newTestimonial = {
+                name,
+                text: { es: text, en: text, pt: text, ar: text },
+                photo: photoUrl,
+                photoWithSaid: photoWithSaidUrl
+            };
 
-        const newData = { ...person };
-        newData.sections.testimonials.list.unshift(newTestimonial);
-        updatePerson(newData);
+            const newData = { ...person };
+            newData.sections.testimonials.list.unshift(newTestimonial);
+            
+            await updatePerson(newData);
 
-        setName('');
-        setText('');
-        setPhotoUrl('');
-        setPhotoWithSaidUrl('');
+            setName('');
+            setText('');
+            setPhotoUrl('');
+            setPhotoWithSaidUrl('');
+            alert(i18n[language].success);
+        } catch (error) {
+            console.error(error);
+            alert(i18n[language].error);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const allTestimonials = testData?.list || [];
@@ -297,7 +324,14 @@ const TestimonialsSection = ({ testData }) => {
                                 {getCharCount(text)} / 300 {language === 'es' ? 'caracteres' : 'characters'}
                             </div>
                         </div>
-                        <button type="submit" className="submit-testimonial-btn" disabled={isUploading || getCharCount(text) > 300}>{i18n[language].addBtn}</button>
+                        <button 
+                            type="submit" 
+                            className="submit-testimonial-btn" 
+                            disabled={isUploading || isUploadingWithSaid || isSubmitting || getCharCount(text) > 300}
+                            style={{ opacity: (isUploading || isUploadingWithSaid || isSubmitting) ? 0.7 : 1 }}
+                        >
+                            {isSubmitting ? i18n[language].publishing : i18n[language].addBtn}
+                        </button>
                     </form>
                 </div>
 
