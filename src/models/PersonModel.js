@@ -88,7 +88,8 @@ const PersonModel = {
             candidacy: {
                 title: { es: "Candidatura" },
                 videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-                proposalPdfUrl: "/propuesta_said.pdf",
+                proposalPdfUrlEs: "/propuesta_said_es.pdf",
+                proposalPdfUrlEn: "/propuesta_said_en.pdf",
                 items: [
                     {
                         title: { es: "Innovación Educativa" },
