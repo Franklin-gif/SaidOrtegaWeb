@@ -440,6 +440,9 @@ const TestimonialsSection = ({ testData }) => {
 
 const BioSection = ({ bioData }) => {
     const { language } = useLanguage();
+    
+    const permanentBio = `Said Ortega es un líder juvenil de Panamá, estudiante de Derecho y actual Comisionado Nacional de Participación Juvenil de la Asociación Nacional de Scouts de Panamá. Su camino en el Movimiento Scout comenzó hace más de nueve años como joven participante del programa educativo, recorriendo cada etapa y alcanzando sus máximas condecoraciones: Scout Balboa, Caminante Istmeño y BP Rover.\n\nActualmente también se desempeña como Subdirector del Grupo Scout 15 Juan Demóstenes Arosemena, acompañando procesos de formación y liderazgo juvenil.\n\nFuera del Movimiento Scout, es voluntario activo de la Cruz Roja Panameña, donde se desempeña como Subdirector del organismo de juventud a nivel local y anteriormente fue Coordinador Nacional de Sector Escolar. Profesionalmente trabaja en gobiernos locales.\n\nEs un apasionado de las relaciones internacionales, la participación juvenil y la cooperación regional. Además, es coautor de dos libros publicados y actualmente se encuentra escribiendo un libro dirigido a jóvenes.\n\nCree firmemente que cuando los jóvenes cuentan con espacios reales para participar y liderar, el Movimiento Scout se vuelve más fuerte, innovador y relevante para la sociedad.`;
+
     return (
         <section id="profile" className="section" style={{ background: 'var(--white)' }}>
             <div className="container">
@@ -448,9 +451,11 @@ const BioSection = ({ bioData }) => {
                 </h2>
                 <div className="bio-grid">
                     <div className="bio-main">
-                        <p className="bio-text">
-                            {bioData.paragraph?.[language]}
-                        </p>
+                        {permanentBio.split('\n\n').map((paragraph, idx) => (
+                            <p key={idx} className="bio-text" style={{ marginBottom: '1.2rem', lineHeight: '1.6' }}>
+                                {paragraph}
+                            </p>
+                        ))}
                     </div>
                 </div>
             </div>

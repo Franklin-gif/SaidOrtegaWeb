@@ -438,8 +438,8 @@ const AdminDashboard = () => {
                     {/* ===== BIO ===== */}
                     {activeTab === 'bio' && (
                         <div className="animate-fade-in-up">
-                            <div style={{ marginBottom: '2rem' }}>
-                                <button onClick={handleSaveBio} style={{ padding: '1rem 1.5rem', background: 'var(--scout-green)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}>💾 Guardar Biografía</button>
+                            <div className="admin-card" style={{ background: '#fef2f2', border: '1px solid #fee2e2', color: '#991b1b', padding: '1rem', borderRadius: '12px', marginBottom: '2rem' }}>
+                                <strong>Nota:</strong> La biografía ha sido configurada como permanente y no se puede modificar desde este panel.
                             </div>
                             <div className="admin-card">
                                 <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
@@ -453,11 +453,11 @@ const AdminDashboard = () => {
                                         </label>
                                     </div>
                                     <div style={{ flex: 1, minWidth: '300px' }}>
-                                        <label style={{ display: 'block', fontWeight: '800', color: 'var(--scout-purple)', marginBottom: '1rem', textTransform: 'uppercase', fontSize: '0.8rem' }}>Párrafo de Biografía (Español)</label>
+                                        <label style={{ display: 'block', fontWeight: '800', color: '#64748b', marginBottom: '1rem', textTransform: 'uppercase', fontSize: '0.8rem' }}>Biografía (Fija / Permanente)</label>
                                         <textarea 
-                                            value={localBio.es}
-                                            onChange={(e) => setLocalBio({ ...localBio, es: e.target.value })}
-                                            style={{ width: '100%', padding: '1.5rem', borderRadius: '16px', border: '2px solid #f1f5f9', background: '#f8fafc', minHeight: '200px', fontSize: '1.1rem', fontFamily: 'inherit', outline: 'none' }}
+                                            readOnly
+                                            value={`Said Ortega es un líder juvenil de Panamá, estudiante de Derecho y actual Comisionado Nacional de Participación Juvenil de la Asociación Nacional de Scouts de Panamá. Su camino en el Movimiento Scout comenzó hace más de nueve años como joven participante del programa educativo, recorriendo cada etapa y alcanzando sus máximas condecoraciones: Scout Balboa, Caminante Istmeño y BP Rover.\n\nActualmente también se desempeña como Subdirector del Grupo Scout 15 Juan Demóstenes Arosemena, acompañando procesos de formación y liderazgo juvenil.\n\nFuera del Movimiento Scout, es voluntario activo de la Cruz Roja Panameña, donde se desempeña como Subdirector del organismo de juventud a nivel local y anteriormente fue Coordinador Nacional de Sector Escolar. Profesionalmente trabaja en gobiernos locales.\n\nEs un apasionado de las relaciones internacionales, la participación juvenil y la cooperación regional. Además, es coautor de dos libros publicados y actualmente se encuentra escribiendo un libro dirigido a jóvenes.\n\nCree firmemente que cuando los jóvenes cuentan con espacios reales para participar y liderar, el Movimiento Scout se vuelve más fuerte, innovador y relevante para la sociedad.`}
+                                            style={{ width: '100%', padding: '1.5rem', borderRadius: '16px', border: '2px dashed #cbd5e1', background: '#f1f5f9', color: '#64748b', minHeight: '300px', fontSize: '1.05rem', fontFamily: 'inherit', outline: 'none', cursor: 'not-allowed', resize: 'vertical' }}
                                         />
                                     </div>
                                 </div>
