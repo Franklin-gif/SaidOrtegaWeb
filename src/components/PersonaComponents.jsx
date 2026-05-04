@@ -72,7 +72,7 @@ const Hero = ({ person }) => {
                         </p>
                     </div>
                     <div className="hero-image-wrapper animate-scale-in delay-500">
-                        <img src={person.imagePath} alt={person.name} />
+                        <img src="/fotoCandidatura/perfil.jpeg" alt={person.name} />
                     </div>
                 </div>
             </div>

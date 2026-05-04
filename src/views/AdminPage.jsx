@@ -445,12 +445,9 @@ const AdminDashboard = () => {
                                 <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
                                     <div style={{ width: '180px' }}>
                                         <div style={{ width: '100%', aspectRatio: '1', borderRadius: '24px', overflow: 'hidden', border: '2px solid var(--scout-purple)', marginBottom: '1rem' }}>
-                                            <img src={localImagePath} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Profile Preview" />
+                                            <img src="/fotoCandidatura/perfil.jpeg" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Profile Permanente" />
                                         </div>
-                                        <label className="photo-upload-btn" style={{ background: 'var(--scout-blue)', textAlign: 'center', width: '100%', display: 'block' }}>
-                                            {isUploading.profile ? 'Subiendo...' : 'Cambiar Foto'}
-                                            <input type="file" accept="image/*" onChange={handleProfileImageUpload} hidden />
-                                        </label>
+                                        <div style={{ textAlign: 'center', fontSize: '0.8rem', color: '#64748b', fontWeight: 'bold' }}>FOTO PERMANENTE</div>
                                     </div>
                                     <div style={{ flex: 1, minWidth: '300px' }}>
                                         <label style={{ display: 'block', fontWeight: '800', color: '#64748b', marginBottom: '1rem', textTransform: 'uppercase', fontSize: '0.8rem' }}>Biografía (Fija / Permanente)</label>
