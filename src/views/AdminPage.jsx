@@ -103,26 +103,28 @@ const AdminDashboard = () => {
         es: text || ""
     });
 
-    const getAggregatedData = () => {
+    const getAggregatedData = (overrides = {}) => {
         const newData = JSON.parse(JSON.stringify(person));
         
         // Sync Bio
-        newData.sections.bio.paragraph = fillTranslations(localBio.es);
+        newData.sections.bio.paragraph = fillTranslations(overrides.bio?.es ?? localBio.es);
         
         // Profile Image
-        newData.imagePath = localImagePath;
+        newData.imagePath = overrides.imagePath ?? localImagePath;
         
         // Sync Trajectory
-        newData.sections.experience.items = localTrajectory.map(item => ({
+        const trajToUse = overrides.trajectory || localTrajectory;
+        newData.sections.experience.items = trajToUse.map(item => ({
             ...item,
             title: fillTranslations(item.title.es)
         }));
         
         // Sync Candidacy
-        if (localCandidacy) {
+        const candToUse = overrides.candidacy || localCandidacy;
+        if (candToUse) {
             newData.sections.candidacy = {
-                ...localCandidacy,
-                items: localCandidacy.items.map(item => ({
+                ...candToUse,
+                items: candToUse.items.map(item => ({
                     ...item,
                     title: fillTranslations(item.title.es),
                     desc: fillTranslations(item.desc.es)
@@ -130,7 +132,7 @@ const AdminDashboard = () => {
             };
         }
         
-        newData.sections.gallery.images = [...localGallery];
+        newData.sections.gallery.images = [...(overrides.gallery || localGallery)];
         return newData;
     };
 
@@ -159,13 +161,18 @@ const AdminDashboard = () => {
 
     const handleAddTrajectoryItem = () => {
         const newItem = { year: "202X", title: { es: "Nuevo Cargo", en: "New Role", pt: "Novo Cargo", ar: "" }, org: "Descripción aquí" };
-        setLocalTrajectory([newItem, ...localTrajectory]);
+        const newList = [newItem, ...localTrajectory];
+        setLocalTrajectory(newList);
+        updatePerson(getAggregatedData({ trajectory: newList }));
+        triggerToast("Hito añadido y guardado automáticamente");
     };
 
     const handleRemoveTrajectoryItem = (idx) => {
         const newList = [...localTrajectory];
         newList.splice(idx, 1);
         setLocalTrajectory(newList);
+        updatePerson(getAggregatedData({ trajectory: newList }));
+        triggerToast("Hito eliminado y guardado automáticamente");
     };
 
     const handleSaveCandidacy = () => {
@@ -179,16 +186,22 @@ const AdminDashboard = () => {
             desc: { es: "Detalle...", en: "Detail...", pt: "Detalhe...", ar: "" }, 
             image: "https://via.placeholder.com/300"
         };
-        setLocalCandidacy({
+        const newList = {
             ...localCandidacy,
             items: [...localCandidacy.items, newItem]
-        });
+        };
+        setLocalCandidacy(newList);
+        updatePerson(getAggregatedData({ candidacy: newList }));
+        triggerToast("Propuesta añadida y guardada automáticamente");
     };
 
     const handleRemoveCandidacyItem = (idx) => {
-        const newList = [...localCandidacy.items];
-        newList.splice(idx, 1);
-        setLocalCandidacy({ ...localCandidacy, items: newList });
+        const newItems = [...localCandidacy.items];
+        newItems.splice(idx, 1);
+        const newList = { ...localCandidacy, items: newItems };
+        setLocalCandidacy(newList);
+        updatePerson(getAggregatedData({ candidacy: newList }));
+        triggerToast("Propuesta eliminada y guardada automáticamente");
     };
 
     const handleSaveGallery = () => {
@@ -202,8 +215,10 @@ const AdminDashboard = () => {
             setIsUploading({...isUploading, video: true});
             try {
                 const url = await uploadToCloudinary(file, "video");
-                setLocalCandidacy({...localCandidacy, videoUrl: url});
-                triggerToast("Video subido a Cloudinary");
+                const newCandidacy = {...localCandidacy, videoUrl: url};
+                setLocalCandidacy(newCandidacy);
+                updatePerson(getAggregatedData({ candidacy: newCandidacy }));
+                triggerToast("Video subido y guardado");
             } catch (err) {
                 triggerToast("Error al subir video");
             } finally {
@@ -220,8 +235,10 @@ const AdminDashboard = () => {
             setIsUploading({...isUploading, gallery: true});
             try {
                 const url = await uploadToCloudinary(file);
-                setLocalGallery([url, ...localGallery]);
-                triggerToast("Imagen de galería lista");
+                const newList = [url, ...localGallery];
+                setLocalGallery(newList);
+                updatePerson(getAggregatedData({ gallery: newList }));
+                triggerToast("Imagen lista y guardada");
             } catch (err) {
                 triggerToast("Error al subir imagen");
             } finally {
@@ -236,10 +253,12 @@ const AdminDashboard = () => {
             setIsUploading({...isUploading, candidacy: {...isUploading.candidacy, [idx]: true}});
             try {
                 const url = await uploadToCloudinary(file);
-                const newList = [...localCandidacy.items];
-                newList[idx].image = url;
-                setLocalCandidacy({ ...localCandidacy, items: newList });
-                triggerToast("Imagen de propuesta lista");
+                const newItems = [...localCandidacy.items];
+                newItems[idx].image = url;
+                const newCandidacy = { ...localCandidacy, items: newItems };
+                setLocalCandidacy(newCandidacy);
+                updatePerson(getAggregatedData({ candidacy: newCandidacy }));
+                triggerToast("Imagen de propuesta lista y guardada");
             } catch (err) {
                 triggerToast("Error al subir imagen");
             } finally {
@@ -255,7 +274,8 @@ const AdminDashboard = () => {
             try {
                 const url = await uploadToCloudinary(file);
                 setLocalImagePath(url);
-                triggerToast("Nueva foto de perfil lista");
+                updatePerson(getAggregatedData({ imagePath: url }));
+                triggerToast("Nueva foto lista y guardada");
             } catch (err) {
                 triggerToast("Error al subir foto");
             } finally {
@@ -557,7 +577,13 @@ const AdminDashboard = () => {
                                 {localGallery.map((img, idx) => (
                                     <div key={idx} style={{ aspectRatio: '1', borderRadius: '20px', overflow: 'hidden', position: 'relative', border: '1px solid #eee' }}>
                                         <img src={img} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                        <button onClick={() => { const nl = [...localGallery]; nl.splice(idx, 1); setLocalGallery(nl); }} style={{ position: 'absolute', top: '10px', right: '10px', background: 'white', border: 'none', width: '30px', height: '30px', borderRadius: '50%', color: '#e11d48', cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.2)' }}>✕</button>
+                                        <button onClick={() => { 
+                                            const nl = [...localGallery]; 
+                                            nl.splice(idx, 1); 
+                                            setLocalGallery(nl); 
+                                            updatePerson(getAggregatedData({ gallery: nl }));
+                                            triggerToast("Eliminado y guardado automáticamente");
+                                        }} style={{ position: 'absolute', top: '10px', right: '10px', background: 'white', border: 'none', width: '30px', height: '30px', borderRadius: '50%', color: '#e11d48', cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.2)' }}>✕</button>
                                     </div>
                                 ))}
                             </div>
