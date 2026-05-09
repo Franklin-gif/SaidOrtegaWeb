@@ -752,5 +752,4 @@ const AdminDashboard = () => {
 };
 
 export default AdminPage;
-nPage;
 
