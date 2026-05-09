@@ -633,4 +633,6 @@ const ClosingPhrase = () => (
             solo estoy intentando que más jóvenes lideren el mundo.
         </h2>
     </section>
+);
+
 export { Navbar, Hero, VisionSection, BioSection, ExperienceSection, CandidacySection, TestimonialsSection, GallerySection, ContactLinks, SocialLinks, ClosingPhrase };
