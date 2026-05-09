@@ -634,8 +634,5 @@ const ClosingPhrase = () => (
         </h2>
     </section>
 );
-
 export { Navbar, Hero, VisionSection, BioSection, ExperienceSection, CandidacySection, TestimonialsSection, GallerySection, ContactLinks, SocialLinks, ClosingPhrase };
-
-e };
 
