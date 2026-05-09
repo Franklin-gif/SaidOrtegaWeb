@@ -243,7 +243,7 @@ const AdminDashboard = () => {
         if (file) {
             setIsUploading({...isUploading, video: true});
             try {
-                const url = await uploadToCloudinary(file, "video");
+                const url = await uploadToR2(file);
                 const newCandidacy = {...localCandidacy, videoUrl: url};
                 setLocalCandidacy(newCandidacy);
                 executeSave(getAggregatedData({ candidacy: newCandidacy }), "Video subido y guardado");
@@ -271,7 +271,7 @@ const AdminDashboard = () => {
 
             setIsUploading({...isUploading, gallery: true});
             try {
-                const url = await uploadToCloudinary(file);
+                const url = await uploadToR2(file);
                 const newList = [url, ...localGallery];
                 setLocalGallery(newList);
                 executeSave(getAggregatedData({ gallery: newList }), "Imagen lista y guardada");
@@ -297,7 +297,7 @@ const AdminDashboard = () => {
 
             setIsUploading({...isUploading, candidacy: {...isUploading.candidacy, [idx]: true}});
             try {
-                const url = await uploadToCloudinary(file);
+                const url = await uploadToR2(file);
                 const newItems = [...localCandidacy.items];
                 newItems[idx].image = url;
                 const newCandidacy = { ...localCandidacy, items: newItems };
@@ -316,7 +316,7 @@ const AdminDashboard = () => {
         if (file) {
             setIsUploading({...isUploading, profile: true});
             try {
-                const url = await uploadToCloudinary(file);
+                const url = await uploadToR2(file);
                 setLocalImagePath(url);
                 executeSave(getAggregatedData({ imagePath: url }), "Nueva foto lista y guardada");
             } catch (err) {
@@ -752,3 +752,5 @@ const AdminDashboard = () => {
 };
 
 export default AdminPage;
+nPage;
+

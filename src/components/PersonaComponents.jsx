@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { usePerson } from '../context/PersonContext';
-import { uploadToCloudinary } from '../utils/cloudinary';
+import { uploadToR2 } from '../utils/r2';
 import { Link } from 'react-router-dom';
 
 const Shapes = () => (
@@ -218,8 +218,8 @@ const TestimonialsSection = ({ testData }) => {
         else setIsUploadingWithSaid(true);
 
         try {
-            console.log(`Subiendo ${type} a Cloudinary...`);
-            const url = await uploadToCloudinary(file);
+            console.log(`Subiendo ${type} a R2...`);
+            const url = await uploadToR2(file);
             if (type === 'avatar') setPhotoUrl(url);
             else setPhotoWithSaidUrl(url);
             console.log(`${type} subida con éxito:`, url);
@@ -636,4 +636,6 @@ const ClosingPhrase = () => (
 );
 
 export { Navbar, Hero, VisionSection, BioSection, ExperienceSection, CandidacySection, TestimonialsSection, GallerySection, ContactLinks, SocialLinks, ClosingPhrase };
+
+e };
 

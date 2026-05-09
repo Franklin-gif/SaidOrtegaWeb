@@ -1,0 +1,10 @@
+name = "said-web-uploader"
+main = "worker_r2.js"
+compatibility_date = "2024-05-08"
+
+[[r2_buckets]]
+binding = "MY_BUCKET"
+bucket_name = "src-all"
+
+[vars]
+PUBLIC_DOMAIN = "https://pub-e3f15b9588ae4772a3906acb2e7d6151.r2.dev"
