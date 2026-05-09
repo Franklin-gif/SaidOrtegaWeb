@@ -6,7 +6,7 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
  * to generate pre-signed URLs instead of putting secrets in the frontend.
  */
 
-// CONFIGURACIÓN (Desde variables de entorno de Vite)
+// CONFIGURACIÓN (Desde variables de entorno de Vite en Cloudflare)
 const WORKER_URL = import.meta.env.VITE_WORKER_URL;
 
 export const uploadToR2 = async (file) => {
