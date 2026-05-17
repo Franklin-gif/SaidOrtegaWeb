@@ -1,16 +1,17 @@
+require('dotenv').config();
 const fs = require('fs');
 const { initializeApp } = require("firebase/app");
 const { getFirestore, doc, setDoc } = require("firebase/firestore");
 
-// Firebase config from src/firebase.js
+// Firebase config
 const firebaseConfig = {
-  apiKey: "AIzaSyCvwBycAFoS0CqigvI2bsAtQa7KhKyyc8E",
-  authDomain: "saidortegweb.firebaseapp.com",
-  projectId: "saidortegweb",
-  storageBucket: "saidortegweb.firebasestorage.app",
-  messagingSenderId: "370126366303",
-  appId: "1:370126366303:web:5f835133c4aec0c2935dea",
-  measurementId: "G-78N2RW4BWN"
+  apiKey: process.env.VITE_FIREBASE_API_KEY,
+  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.VITE_FIREBASE_APP_ID,
+  measurementId: process.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 async function updateFirebase() {
@@ -22,7 +23,7 @@ async function updateFirebase() {
         const db = getFirestore(app);
 
         // 2. Leer el archivo migrado
-        const backupPath = './backup_migrado_r2.json';
+        const backupPath = './backups/backup_migrado_r2.json';
         if (!fs.existsSync(backupPath)) {
             throw new Error(`No se encontró el archivo ${backupPath}. Ejecuta primero la migración.`);
         }

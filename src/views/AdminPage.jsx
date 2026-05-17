@@ -1,31 +1,55 @@
 import React, { useState, useEffect } from 'react';
 import { usePerson } from '../context/PersonContext';
-import { uploadToCloudinary } from '../utils/cloudinary';
-import { storage } from '../firebase';
+import { storage, auth } from '../firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
 
 const AdminPage = () => {
     const { person, updatePerson } = usePerson();
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [user, setUser] = useState(null);
+    const [loadingAuth, setLoadingAuth] = useState(true);
     
     // Login state
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loginError, setLoginError] = useState('');
 
-    const handleLogin = (e) => {
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
+            setLoadingAuth(false);
+        });
+        return () => unsubscribe();
+    }, []);
+
+    const handleLogin = async (e) => {
         e.preventDefault();
-        if (email === 'saidortega102004@gmail.com' && password === 'adminsaid123') {
-            setIsAuthenticated(true);
-            setLoginError('');
-        } else {
-            setLoginError('Credenciales incorrectas');
+        setLoginError('');
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+        } catch (error) {
+            console.error("Error de login:", error.code);
+            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                setLoginError('Credenciales incorrectas');
+            } else {
+                setLoginError('Error al iniciar sesión. Inténtalo de nuevo.');
+            }
         }
     };
 
-    if (!person) return <div style={{height: '100vh', display: 'grid', placeItems:'center'}}>Loading...</div>;
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+        } catch (error) {
+            console.error("Error al cerrar sesión:", error);
+        }
+    };
 
-    if (!isAuthenticated) {
+    if (loadingAuth) return <div style={{height: '100vh', display: 'grid', placeItems:'center'}}>Cargando sistema de seguridad...</div>;
+
+    if (!person) return <div style={{height: '100vh', display: 'grid', placeItems:'center'}}>Cargando datos...</div>;
+
+    if (!user) {
         return (
             <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f4f5f7', position: 'relative', fontFamily: 'Inter, sans-serif', overflow: 'hidden' }}>
                 <div style={{ position: 'absolute', top: '-10%', left: '-10%', width: '40%', height: '40%', background: 'rgba(78, 26, 138, 0.03)', borderRadius: '50%', filter: 'blur(80px)' }}></div>
@@ -57,11 +81,11 @@ const AdminPage = () => {
     }
 
     return (
-        <AdminDashboard />
+        <AdminDashboard handleLogout={handleLogout} />
     );
 };
 
-const AdminDashboard = () => {
+const AdminDashboard = ({ handleLogout }) => {
     const { person, updatePerson, dbStatus } = usePerson();
     const [activeTab, setActiveTab] = useState('dashboard');
     const [showToast, setShowToast] = useState(false);
@@ -408,9 +432,15 @@ const AdminDashboard = () => {
                     </button>
                     <button 
                         onClick={() => window.location.href = "/"}
-                        style={{ width: '100%', background: 'white', color: '#111', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '0.8rem', fontWeight: '700', cursor: 'pointer' }}
+                        style={{ width: '100%', background: 'white', color: '#111', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '0.8rem', fontWeight: '700', cursor: 'pointer', marginBottom: '10px' }}
                     >
                         Ver Sitio Real
+                    </button>
+                    <button 
+                        onClick={handleLogout}
+                        style={{ width: '100%', background: '#fee2e2', color: '#991b1b', border: 'none', borderRadius: '10px', padding: '0.8rem', fontWeight: '700', cursor: 'pointer' }}
+                    >
+                        Cerrar Sesión
                     </button>
                 </div>
             </aside>
@@ -527,10 +557,7 @@ const AdminDashboard = () => {
                             </div>
                             <div className="admin-card">
                                 <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
-                                    <div style={{ width: '180px' }}>
-                                        <div style={{ width: '100%', aspectRatio: '1', borderRadius: '24px', overflow: 'hidden', border: '2px solid var(--scout-purple)', marginBottom: '1rem' }}>
-                                            <img src="/fotoCandidatura/perfil.jpeg" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Profile Permanente" />
-                                        </div>
+                                            <img src="/fotoCandidatura/perfil-removebg-preview (1).png" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Profile Permanente" />
                                         <div style={{ textAlign: 'center', fontSize: '0.8rem', color: '#64748b', fontWeight: 'bold' }}>FOTO PERMANENTE</div>
                                     </div>
                                     <div style={{ flex: 1, minWidth: '300px' }}>
@@ -543,7 +570,6 @@ const AdminDashboard = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
                     )}
 
                     {/* ===== TRAYECTORIA ===== */}

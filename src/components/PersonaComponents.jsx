@@ -72,7 +72,7 @@ const Hero = ({ person }) => {
                         </p>
                     </div>
                     <div className="hero-image-wrapper animate-scale-in delay-500">
-                        <img src="/fotoCandidatura/perfil.jpeg" alt={person.name} />
+                        <img src="/fotoCandidatura/perfil-removebg-preview (1).png" alt={person.name} />
                     </div>
                 </div>
             </div>

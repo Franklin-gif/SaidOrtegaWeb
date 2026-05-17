@@ -24,7 +24,7 @@ const s3 = new S3Client({
 async function migrate() {
     console.log("🚀 Iniciando migración de Cloudinary a R2...");
     
-    const backupPath = './backup_total_said.json';
+    const backupPath = './backups/backup_total_said.json';
     const backup = JSON.parse(fs.readFileSync(backupPath, 'utf8'));
     let dataStr = JSON.stringify(backup);
 
@@ -64,8 +64,8 @@ async function migrate() {
         }
     }
 
-    fs.writeFileSync('./backup_migrado_r2.json', dataStr);
-    console.log("\n✨ Migración completada. Nuevo archivo: backup_migrado_r2.json");
+    fs.writeFileSync('./backups/backup_migrado_r2.json', dataStr);
+    console.log("\n✨ Migración completada. Nuevo archivo: backups/backup_migrado_r2.json");
 }
 
 migrate();

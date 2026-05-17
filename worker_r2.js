@@ -15,6 +15,12 @@ export default {
 
     if (url.pathname === "/upload" && request.method === "POST") {
       try {
+        // Validar clave de autorización
+        const authKey = request.headers.get("X-Auth-Key");
+        if (!authKey || authKey !== env.AUTH_KEY) {
+          return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+        }
+
         const formData = await request.formData();
         const file = formData.get("file");
         const key = formData.get("key");

@@ -8,6 +8,7 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
 // CONFIGURACIÓN (Desde variables de entorno de Vite en Cloudflare)
 const WORKER_URL = import.meta.env.VITE_WORKER_URL;
+const R2_AUTH_KEY = import.meta.env.VITE_R2_AUTH_KEY;
 
 export const uploadToR2 = async (file) => {
     if (!file) return null;
@@ -22,6 +23,9 @@ export const uploadToR2 = async (file) => {
 
         const response = await fetch(`${WORKER_URL}/upload`, {
             method: "POST",
+            headers: {
+                "X-Auth-Key": R2_AUTH_KEY
+            },
             body: formData,
         });
 
