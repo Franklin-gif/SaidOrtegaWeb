@@ -681,19 +681,20 @@ const AdminDashboard = ({ handleLogout }) => {
                                     
                                     {/* Video Upload Box */}
                                     <div style={{ background: '#f8fafc', border: '2px dashed #cbd5e1', borderRadius: '16px', padding: '1.5rem', textAlign: 'center', transition: 'all 0.3s', position: 'relative' }} onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--scout-purple)'} onMouseLeave={e => e.currentTarget.style.borderColor = '#cbd5e1'}>
-                                        <input type="file" id="videoUpload" accept="video/*" onChange={handleVideoUpload} style={{ display: 'none' }} />
-                                        <label htmlFor="videoUpload" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
                                             <span style={{ fontSize: '2.5rem' }}>🎬</span>
-                                            <span style={{ fontWeight: '800', color: 'var(--scout-purple)', fontSize: '0.9rem' }}>Video de Campaña</span>
-                                            <span style={{ fontSize: '0.75rem', color: '#64748b' }}>{isUploading.video ? 'Subiendo...' : 'Haz clic para subir (MP4)'}</span>
-                                        </label>
+                                            <span style={{ fontWeight: '800', color: 'var(--scout-purple)', fontSize: '0.9rem' }}>Video de Campaña Permanente</span>
+                                            <span style={{ fontSize: '0.75rem', color: '#64748b', maxWidth: '300px', margin: '0 auto', lineHeight: '1.4' }}>
+                                                Cargado localmente desde:<br/>
+                                                <code>/public/VideoCandidatura/SAID O..mp4</code><br/>
+                                                Para cambiarlo, reemplaza el archivo en tu carpeta de proyecto.
+                                            </span>
+                                        </div>
                                         
-                                        {localCandidacy.videoUrl && !isUploading.video && (
-                                            <div style={{ marginTop: '1rem', background: '#dcfce7', padding: '0.5rem', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                                                <span style={{ color: '#166534', fontWeight: 'bold', fontSize: '0.8rem' }}>✓ Video Listo</span>
-                                                <a href={localCandidacy.videoUrl} target="_blank" rel="noopener noreferrer" style={{ background: 'white', color: '#166534', padding: '0.2rem 0.5rem', borderRadius: '5px', fontSize: '0.7rem', textDecoration: 'none', fontWeight: 'bold', border: '1px solid #166534' }}>👀 Ver</a>
-                                            </div>
-                                        )}
+                                        <div style={{ marginTop: '1rem', background: '#dcfce7', padding: '0.5rem', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                                            <span style={{ color: '#166534', fontWeight: 'bold', fontSize: '0.8rem' }}>✓ Video Local Activo</span>
+                                            <a href="/VideoCandidatura/SAID O..mp4" target="_blank" rel="noopener noreferrer" style={{ background: 'white', color: '#166534', padding: '0.2rem 0.5rem', borderRadius: '5px', fontSize: '0.7rem', textDecoration: 'none', fontWeight: 'bold', border: '1px solid #166534' }}>👀 Ver Video</a>
+                                        </div>
                                     </div>
 
 

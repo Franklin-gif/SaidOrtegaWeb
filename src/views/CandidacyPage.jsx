@@ -87,21 +87,11 @@ const CandidacyPage = () => {
             <section style={{ padding: 'clamp(3rem, 10vw, 6rem) 1rem 2rem', background: 'var(--white)', textAlign: 'center' }}>
                 <div className="container" style={{ maxWidth: '900px', margin: '0 auto' }}>
                     <div style={{ borderRadius: '15px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.15)', background: '#000', aspectRatio: '16/9' }}>
-                        {candidacy.videoUrl?.startsWith('data:video') ? (
-                            <video 
-                                src={candidacy.videoUrl} 
-                                controls 
-                                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                            />
-                        ) : (
-                            <iframe 
-                                src={candidacy.videoUrl} 
-                                style={{ width: '100%', height: '100%', border: 'none' }}
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                allowFullScreen
-                                title="Candidacy Video"
-                            ></iframe>
-                        )}
+                        <video 
+                            src="/VideoCandidatura/SAID O..mp4" 
+                            controls 
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                        />
                     </div>
                 </div>
             </section>
@@ -197,7 +187,7 @@ const CandidacyPage = () => {
                                 }}>
                                     <button 
                                         onClick={() => {
-                                            setSelectedPdfUrl('/propuestaDoc/PROPUESTA esp.._compressed.pdf');
+                                            setSelectedPdfUrl('https://pub-e3f15b9588ae4772a3906acb2e7d6151.r2.dev/propuestaDoc/PROPUESTA_espanol.pdf');
                                             setShowPdf(true);
                                         }}
                                         style={{
@@ -218,7 +208,7 @@ const CandidacyPage = () => {
                                     </button>
                                     <button 
                                         onClick={() => {
-                                            setSelectedPdfUrl('/propuestaDoc/Proposal En. compressed (1).pdf');
+                                            setSelectedPdfUrl('https://pub-e3f15b9588ae4772a3906acb2e7d6151.r2.dev/propuestaDoc/PROPUESTA_Eng.pdf');
                                             setShowPdf(true);
                                         }}
                                         style={{
