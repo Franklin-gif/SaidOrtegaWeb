@@ -88,7 +88,7 @@ const CandidacyPage = () => {
                 <div className="container" style={{ maxWidth: '900px', margin: '0 auto' }}>
                     <div style={{ borderRadius: '15px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.15)', background: '#000', aspectRatio: '16/9' }}>
                         <video 
-                            src="/VideoCandidatura/SAID O..mp4" 
+                            src="https://pub-e3f15b9588ae4772a3906acb2e7d6151.r2.dev/VideoCandidatura/SAID_O.mp4" 
                             controls 
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                         />

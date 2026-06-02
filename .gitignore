@@ -34,3 +34,6 @@ dist-ssr
 backup_*.json
 backups/
 
+# Local Campaign Videos
+public/VideoCandidatura/
+
