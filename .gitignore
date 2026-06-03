@@ -37,3 +37,9 @@ backups/
 # Local Campaign Videos
 public/VideoCandidatura/
 
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
