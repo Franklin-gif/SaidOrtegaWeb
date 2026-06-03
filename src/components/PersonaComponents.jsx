@@ -2,6 +2,7 @@ import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { usePerson } from '../context/PersonContext';
 import { uploadToR2 } from '../utils/r2';
+import { compressImage } from '../utils/imageCompressor';
 import { Link } from 'react-router-dom';
 
 const Shapes = () => (
@@ -203,14 +204,20 @@ const TestimonialsSection = ({ testData }) => {
         const file = e.target.files[0];
         if (!file) return;
 
-        // Validaciones básicas
-        if (!file.type.startsWith('image/')) {
-            alert(language === 'es' ? "Por favor selecciona un archivo de imagen válido." : "Please select a valid image file.");
+        // Aceptar más formatos de imagen (incluyendo HEIC de iPhone)
+        const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif', 'image/gif', 'image/bmp', 'image/avif'];
+        const isImage = file.type.startsWith('image/') || validTypes.includes(file.type.toLowerCase()) || /\.(jpg|jpeg|png|webp|heic|heif|gif|bmp|avif)$/i.test(file.name);
+        
+        if (!isImage) {
+            alert(language === 'es' ? "Por favor selecciona un archivo de imagen válido (JPG, PNG, WEBP, HEIC)." : "Please select a valid image file (JPG, PNG, WEBP, HEIC).");
+            e.target.value = '';
             return;
         }
 
-        if (file.size > 5 * 1024 * 1024) { // 5MB limit
-            alert(language === 'es' ? "La imagen es demasiado pesada (máximo 5MB)." : "Image is too large (max 5MB).");
+        // Allow larger originals since we compress before upload
+        if (file.size > 15 * 1024 * 1024) {
+            alert(language === 'es' ? "La imagen es demasiado pesada (máximo 15MB)." : "Image is too large (max 15MB).");
+            e.target.value = '';
             return;
         }
 
@@ -218,17 +225,28 @@ const TestimonialsSection = ({ testData }) => {
         else setIsUploadingWithSaid(true);
 
         try {
-            console.log(`Subiendo ${type} a R2...`);
-            const url = await uploadToR2(file);
+            // Compress image before upload
+            console.log(`Comprimiendo imagen (${(file.size / 1024).toFixed(0)}KB)...`);
+            const compressed = await compressImage(file, {
+                maxWidth: type === 'avatar' ? 500 : 1200,
+                maxHeight: type === 'avatar' ? 500 : 1200,
+                quality: 0.8,
+                maxSizeBytes: type === 'avatar' ? 500 * 1024 : 2 * 1024 * 1024
+            });
+
+            console.log(`Subiendo ${type} (${(compressed.size / 1024).toFixed(0)}KB)...`);
+            const url = await uploadToR2(compressed);
+            
             if (type === 'avatar') setPhotoUrl(url);
             else setPhotoWithSaidUrl(url);
             console.log(`${type} subida con éxito:`, url);
         } catch (error) {
             console.error("Error uploading image:", error);
             const msg = language === 'es' 
-                ? "No se pudo subir la imagen. Verifica que el formato sea correcto o intenta con una imagen más pequeña." 
-                : "Failed to upload image. Check the format or try a smaller image.";
+                ? `Error al subir la imagen: ${error.message || 'Intenta de nuevo.'}` 
+                : `Failed to upload image: ${error.message || 'Please try again.'}`;
             alert(msg);
+            e.target.value = '';
         } finally {
             if (type === 'avatar') setIsUploading(false);
             else setIsUploadingWithSaid(false);
