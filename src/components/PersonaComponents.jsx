@@ -183,7 +183,7 @@ const CandidacySection = ({ candData }) => {
 
 const TestimonialsSection = ({ testData }) => {
     const { language } = useLanguage();
-    const { person, updatePerson } = usePerson();
+    const { person, addTestimonial } = usePerson();
     const [name, setName] = React.useState('');
     const [text, setText] = React.useState('');
     const [photoUrl, setPhotoUrl] = React.useState('');
@@ -256,11 +256,8 @@ const TestimonialsSection = ({ testData }) => {
                 photo: photoUrl,
                 photoWithSaid: photoWithSaidUrl
             };
-
-            const newData = { ...person };
-            newData.sections.testimonials.list.unshift(newTestimonial);
             
-            await updatePerson(newData);
+            await addTestimonial(newTestimonial);
 
             setName('');
             setText('');

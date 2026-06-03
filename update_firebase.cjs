@@ -1,7 +1,7 @@
 require('dotenv').config();
 const fs = require('fs');
 const { initializeApp } = require("firebase/app");
-const { getFirestore, doc, setDoc } = require("firebase/firestore");
+const { getFirestore, doc, setDoc, collection, getDocs, addDoc } = require("firebase/firestore");
 
 // Firebase config
 const firebaseConfig = {
@@ -39,7 +39,41 @@ async function updateFirebase() {
         console.log("⏳ Subiendo datos a Firestore (web_data/said_web)...");
         const docRef = doc(db, 'web_data', 'said_web');
         
+        // Extraemos testimonios antes de limpiar la lista en el documento principal
+        const initialTestimonials = newData.sections?.testimonials?.list || [];
+        
+        // Limpiamos la lista del documento principal para evitar duplicación
+        if (newData.sections?.testimonials) {
+            newData.sections.testimonials.list = [];
+        }
+        
         await setDoc(docRef, newData);
+        console.log("✅ Configuración global del sitio subida.");
+
+        // 4. Migrar testimonios a la colección dedicada si está vacía
+        console.log("⏳ Verificando colección de testimonios en Firestore...");
+        const testimonialsRef = collection(db, 'testimonials');
+        const testimonialsSnap = await getDocs(testimonialsRef);
+        
+        if (testimonialsSnap.empty) {
+            if (initialTestimonials.length > 0) {
+                console.log(`⏳ Migrando ${initialTestimonials.length} testimonios a la colección dedicada...`);
+                for (const t of initialTestimonials) {
+                    await addDoc(testimonialsRef, {
+                        name: t.name,
+                        text: t.text,
+                        photo: t.photo || "",
+                        photoWithSaid: t.photoWithSaid || "",
+                        createdAt: new Date().toISOString()
+                    });
+                }
+                console.log("✅ Testimonios migrados exitosamente.");
+            } else {
+                console.log("ℹ️ No hay testimonios en el backup para migrar.");
+            }
+        } else {
+            console.log("ℹ️ La colección de testimonios ya contiene datos. Omitiendo migración.");
+        }
 
         console.log("✅ ¡Éxito! La base de datos ha sido actualizada.");
         console.log("🔗 Las imágenes ahora se cargan desde Cloudflare R2.");

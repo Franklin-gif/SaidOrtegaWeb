@@ -86,7 +86,7 @@ const AdminPage = () => {
 };
 
 const AdminDashboard = ({ handleLogout }) => {
-    const { person, updatePerson, dbStatus } = usePerson();
+    const { person, updatePerson, testimonials, deleteTestimonial, dbStatus } = usePerson();
     const [activeTab, setActiveTab] = useState('dashboard');
     const [showToast, setShowToast] = useState(false);
     const [toastMsg, setToastMsg] = useState('');
@@ -730,14 +730,34 @@ const AdminDashboard = ({ handleLogout }) => {
                     {/* ===== TESTIMONIOS ===== */}
                     {activeTab === 'testimonios' && (
                         <div className="animate-fade-in-up">
-                            {person.sections.testimonials.list.map((t, idx) => (
-                                <div key={idx} style={{ background: 'white', padding: '1.5rem', borderRadius: '20px', border: '1px solid #eaeaea', display: 'flex', gap: '1.5rem', alignItems: 'center', marginBottom: '1rem' }}>
-                                    <img src={t.photo} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />
+                            {testimonials.map((t, idx) => (
+                                <div key={t.id || idx} style={{ background: 'white', padding: '1.5rem', borderRadius: '20px', border: '1px solid #eaeaea', display: 'flex', gap: '1.5rem', alignItems: 'center', marginBottom: '1rem' }}>
+                                    {t.photo ? (
+                                        <img src={t.photo} style={{ width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} alt={t.name} />
+                                    ) : (
+                                        <div style={{ background: 'var(--scout-purple)', width: '50px', height: '50px', borderRadius: '50%', display: 'grid', placeItems: 'center', color: 'white', fontWeight: 'bold', flexShrink: 0 }}>
+                                            {t.name ? t.name[0].toUpperCase() : '?'}
+                                        </div>
+                                    )}
                                     <div style={{ flex: 1 }}>
-                                        <p style={{ margin: 0, fontStyle: 'italic' }}>"{t.text.es}"</p>
+                                        <p style={{ margin: 0, fontStyle: 'italic' }}>"{t.text?.es || t.text}"</p>
                                         <strong style={{ fontSize: '0.9rem' }}>{t.name}</strong>
                                     </div>
-                                    <button onClick={() => { const newData = getAggregatedData(); newData.sections.testimonials.list.splice(idx, 1); executeSave(newData, "Eliminado y guardado"); }} style={{ padding: '0.5rem 1rem', background: '#fff1f2', color: '#e11d48', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>Borrar</button>
+                                    <button 
+                                        onClick={async () => { 
+                                            if (window.confirm("¿Seguro que deseas eliminar este testimonio?")) {
+                                                try {
+                                                    await deleteTestimonial(t.id);
+                                                    triggerToast("Testimonio eliminado correctamente");
+                                                } catch (err) {
+                                                    triggerToast("❌ Error al eliminar testimonio");
+                                                }
+                                            }
+                                        }} 
+                                        style={{ padding: '0.5rem 1rem', background: '#fff1f2', color: '#e11d48', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
+                                    >
+                                        Borrar
+                                    </button>
                                 </div>
                             ))}
                         </div>

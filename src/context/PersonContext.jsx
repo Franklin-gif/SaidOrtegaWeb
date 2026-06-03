@@ -1,12 +1,13 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import PersonModel from '../models/PersonModel';
 import { db } from '../firebase';
-import { doc, onSnapshot, setDoc } from 'firebase/firestore';
+import { doc, onSnapshot, setDoc, collection, query, orderBy, addDoc, deleteDoc } from 'firebase/firestore';
 
 const PersonContext = createContext();
 
 export const PersonProvider = ({ children }) => {
     const [person, setPerson] = useState(null);
+    const [testimonials, setTestimonials] = useState([]);
     const [loading, setLoading] = useState(true);
     const [dbStatus, setDbStatus] = useState('connecting'); // 'connecting', 'online', 'error', 'offline'
 
@@ -16,17 +17,13 @@ export const PersonProvider = ({ children }) => {
 
         console.log("Iniciando conexión con Firestore...");
 
-        const unsubscribe = onSnapshot(docRef, 
+        const unsubscribeMain = onSnapshot(docRef, 
             async (docSnap) => {
                 const data = docSnap.exists() ? docSnap.data() : null;
                 
                 if (docSnap.exists() && data && data.sections) {
                     console.log("Datos recibidos de Firestore:", data.version);
-                    
-                    // If versions differ, we keep the Firestore data (user edits) 
-                    // and just update the version locally if needed, but we don't overwrite the cloud data.
                     setPerson(data);
-
                     setDbStatus('online');
                 } else {
                     console.log("Documento vacío o no existe. Restaurando estructura inicial...");
@@ -52,7 +49,26 @@ export const PersonProvider = ({ children }) => {
             }
         );
 
-        return () => unsubscribe();
+        // Escuchar testimonios en tiempo real
+        const testimonialsRef = collection(db, 'testimonials');
+        const testimonialsQuery = query(testimonialsRef, orderBy('createdAt', 'desc'));
+        const unsubscribeTestimonials = onSnapshot(testimonialsQuery, 
+            (querySnap) => {
+                const list = [];
+                querySnap.forEach((doc) => {
+                    list.push({ id: doc.id, ...doc.data() });
+                });
+                setTestimonials(list);
+            },
+            (error) => {
+                console.error("Error al cargar testimonios en tiempo real:", error.code, error.message);
+            }
+        );
+
+        return () => {
+            unsubscribeMain();
+            unsubscribeTestimonials();
+        };
     }, []);
 
     const updatePerson = async (newData) => {
@@ -67,8 +83,31 @@ export const PersonProvider = ({ children }) => {
         }
     };
 
+    const addTestimonial = async (testimonial) => {
+        try {
+            const testimonialsRef = collection(db, 'testimonials');
+            await addDoc(testimonialsRef, {
+                ...testimonial,
+                createdAt: new Date().toISOString()
+            });
+        } catch (error) {
+            console.error("Error al guardar testimonio:", error);
+            throw error;
+        }
+    };
+
+    const deleteTestimonial = async (id) => {
+        try {
+            const testimonialDocRef = doc(db, 'testimonials', id);
+            await deleteDoc(testimonialDocRef);
+        } catch (error) {
+            console.error("Error al borrar testimonio:", error);
+            throw error;
+        }
+    };
+
     return (
-        <PersonContext.Provider value={{ person, loading, updatePerson, dbStatus }}>
+        <PersonContext.Provider value={{ person, testimonials, loading, updatePerson, addTestimonial, deleteTestimonial, dbStatus }}>
             {children}
         </PersonContext.Provider>
     );

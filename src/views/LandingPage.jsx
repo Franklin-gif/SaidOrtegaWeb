@@ -7,7 +7,7 @@ import { Navbar, Hero, VisionSection, BioSection, ExperienceSection, CandidacySe
  * This component is the primary entry point for the landing page's UI layout.
  */
 const LandingPage = () => {
-    const { person, loading } = usePerson();
+    const { person, loading, testimonials } = usePerson();
 
     if (loading || !person) {
         return (
@@ -25,7 +25,7 @@ const LandingPage = () => {
             <BioSection bioData={person.sections.bio} />
             <ExperienceSection expData={person.sections.experience} />
             <GallerySection galleryData={person.sections.gallery} />
-            <TestimonialsSection testData={person.sections.testimonials} />
+            <TestimonialsSection testData={{ ...person.sections.testimonials, list: testimonials }} />
             <ContactLinks
                 contactData={person.sections.contact}
                 socialLinks={person.socialLinks}
