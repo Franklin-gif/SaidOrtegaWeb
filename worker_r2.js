@@ -6,7 +6,7 @@ export default {
     const corsHeaders = {
       "Access-Control-Allow-Origin": "*", // En producción, cámbialo por tu dominio real
       "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Allow-Headers": "Content-Type, X-Auth-Key",
     };
 
     if (request.method === "OPTIONS") {
